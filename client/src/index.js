@@ -5,11 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Login from './screens/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Register from './screens/Register';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Login />
+    <Register />
   </React.StrictMode>
 );
 

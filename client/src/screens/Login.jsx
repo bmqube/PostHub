@@ -40,7 +40,12 @@ function Login() {
           </div>
           <div className="d-grid gap-2">
             <Button variant="outline-secondary" type="submit">
-              Create new account
+              <a
+                className="text-decoration-none text-secondary"
+                href="/register"
+              >
+                Create new account
+              </a>
             </Button>
           </div>
         </Col>
