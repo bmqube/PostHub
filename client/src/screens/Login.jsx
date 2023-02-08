@@ -4,15 +4,34 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "../components/Header";
+import { useState } from "react";
+import { Alert } from "react-bootstrap";
 
 function Login() {
+  const [alertClass, setAlertClass] = useState("d-none");
+  const [alertMessage, setAlertMessage] = useState("Message");
+  const [alertVariant, setAlertVariant] = useState("danger");
+
+  const showAlert = (variant, message) => {
+    setAlertClass("d-block");
+    setAlertMessage(message);
+    setAlertVariant(variant);
+  };
   return (
     <Container>
       <Row
         className="justify-content-center align-items-center"
         style={{ minHeight: "100vh" }}
       >
-        <Col sm="5" className="level1 px-5">
+        <Alert
+          variant={alertVariant}
+          className={alertClass}
+          onClose={() => setAlertClass("d-none")}
+          dismissible
+        >
+          {alertMessage}
+        </Alert>
+        <Col xs="10" md="8" lg="6" xl="5" className="level1 px-5">
           <Header />
           <Form className="mt-3">
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -42,11 +61,8 @@ function Login() {
             <p>or</p>
           </div> */}
           <div className="d-grid gap-2 mb-5">
-            <Button variant="outline-secondary" type="submit">
-              <a
-                className="text-decoration-none text-secondary"
-                href="/register"
-              >
+            <Button variant="outline-warning" type="submit">
+              <a className="text-decoration-none text-white" href="/register">
                 Create new account
               </a>
             </Button>
