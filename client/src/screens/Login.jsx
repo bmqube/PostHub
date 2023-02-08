@@ -8,37 +8,40 @@ import Header from "../components/Header";
 function Login() {
   return (
     <Container>
-      <Row className="justify-content-center">
-        <Col sm="4">
+      <Row
+        className="justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Col sm="5" className="level1 px-5">
           <Header />
           <Form className="mt-3">
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label className="text-white">Email address</Form.Label>
               <Form.Control type="email" placeholder="Enter email" />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
+              <Form.Label className="text-white">Password</Form.Label>
               <Form.Control type="password" placeholder="Password" />
             </Form.Group>
             <div className="d-grid gap-2">
-              <Button variant="primary" type="submit">
+              <Button variant="warning" type="submit">
                 Log In
               </Button>
             </div>
           </Form>
-          <div className="mt-2 text-center">
+          <div className="my-3 text-end">
             <a
-              className="text-primary text-decoration-none"
+              className="text-warning text-decoration-none"
               href="/reset-password"
             >
               Forgot Password?
             </a>
           </div>
-          <div className="my-3 text-center">
+          {/* <div className="my-3 text-center text-white">
             <p>or</p>
-          </div>
-          <div className="d-grid gap-2">
+          </div> */}
+          <div className="d-grid gap-2 mb-5">
             <Button variant="outline-secondary" type="submit">
               <a
                 className="text-decoration-none text-secondary"
