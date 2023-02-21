@@ -26,5 +26,6 @@ io.on("connection", (socket) => {
 });
 
 app.use("/auth", require("./api/auth"));
+app.use("/connect", require("./api/connect"));
 
 httpServer.listen(8000);
