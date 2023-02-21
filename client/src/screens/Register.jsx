@@ -6,6 +6,8 @@ import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
 import Header from "../components/Header";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 function Register() {
   const [fullname, setFullname] = useState("");
@@ -18,6 +20,9 @@ function Register() {
   const [alertClass, setAlertClass] = useState("d-none");
   const [alertMessage, setAlertMessage] = useState("Message");
   const [alertVariant, setAlertVariant] = useState("danger");
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  const isAlreadyLogged = localStorage.getItem("userId");
 
   const showAlert = (variant, message) => {
     setAlertClass("d-block");
@@ -25,7 +30,7 @@ function Register() {
     setAlertVariant(variant);
   };
 
-  const register = (e) => {
+  const register = async (e) => {
     e.preventDefault();
 
     if (
@@ -38,14 +43,17 @@ function Register() {
       !gender
     ) {
       showAlert("danger", "Please fill up all fields");
+      return;
     }
 
     if (!checked) {
       showAlert("danger", "You have to accept the terms and conditions");
+      return;
     }
 
     if (password !== password2) {
       showAlert("danger", "Passwords didn't match");
+      return;
     }
 
     const data = {
@@ -55,13 +63,28 @@ function Register() {
       birthdate: birthdate,
       gender: gender,
     };
-    console.log(data);
+
+    // console.log(birthdate);
+
+    let response = await axios.post(
+      "http://localhost:8000/auth/register",
+      data
+    );
+
+    if (response.data.code === "SUCCESS") {
+      showAlert("success", response.data.message);
+      setTimeout(() => setIsRegistered(true), 1000);
+    } else {
+      showAlert("danger", response.data.message);
+    }
   };
 
   //onClose={() => setShow(false)} dismissible
 
   return (
     <Container>
+      {isAlreadyLogged && <Navigate to="/" />}
+      {isRegistered && <Navigate to="/login" />}
       <Row
         className="justify-content-center align-items-center"
         style={{ minHeight: "100vh" }}

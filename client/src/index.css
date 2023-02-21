@@ -8,6 +8,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.tab > .nav-item > .nav-link {
+  color: #fff !important;
+}
+
+.tab>.nav-item>.active {
+  color: #000 !important;
+}
+
 .level1 {
   background-color: #282828;
 }
