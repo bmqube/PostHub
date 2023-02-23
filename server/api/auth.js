@@ -33,6 +33,7 @@ router.post("/login", async (req, res) => {
         message: "Login is successful",
         data: {
           userId: currentUser._id,
+          name: currentUser.name,
           userSessionId: newUserSession._id,
         },
       });

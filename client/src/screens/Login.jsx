@@ -45,6 +45,7 @@ function Login() {
     if (response.data.code === "SUCCESS") {
       console.log(response.data);
       localStorage.setItem("userId", response.data.data.userId);
+      localStorage.setItem("name", response.data.data.name);
       localStorage.setItem("userSessionId", response.data.data.userSessionId);
       showAlert("success", response.data.message);
       setTimeout(() => setIsLogged(true), 1000);

@@ -10,6 +10,7 @@ import Tabs from "react-bootstrap/Tabs";
 import Profile from "../components/Profile";
 import Newsfeed from "../components/Newsfeed";
 import Connections from "../components/Connections";
+import Footer from "../components/Footer";
 
 function Home() {
   const isAlreadyLogged = localStorage.getItem("userId");
@@ -42,6 +43,7 @@ function Home() {
               <Connections />
             </Tab>
           </Tabs>
+          <Footer />
         </Col>
       </Row>
     </Container>
