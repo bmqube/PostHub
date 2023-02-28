@@ -35,36 +35,40 @@ export default function Suggestions() {
       }
     );
 
-    console.log(response);
+    // console.log(response);
 
     setEffect(!effect);
   };
 
   return (
-    <>
+    <div className="mb-3">
       <h3 className="text-white">Suggestions</h3>
-      <ListGroup className="my-3 bg-dark">
-        {listOfUsers.map((e, index) => (
-          <ListGroup.Item
-            as="li"
-            key={index}
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">{e.name}</div>
-              <div className="text-muted">Still Working</div>
-            </div>
-            <Button
-              onClick={() => {
-                sendFriendReq(e.userId);
-              }}
-              variant="warning"
+      {listOfUsers.length === 0 ? (
+        <p className="text-white">No Friend Requests</p>
+      ) : (
+        <ListGroup className="my-3 bg-dark">
+          {listOfUsers.map((e, index) => (
+            <ListGroup.Item
+              as="li"
+              key={index}
+              className="d-flex justify-content-between align-items-start"
             >
-              Add
-            </Button>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-    </>
+              <div className="ms-2 me-auto">
+                <div className="fw-bold">{e.name}</div>
+                <div className="text-muted">Still Working</div>
+              </div>
+              <Button
+                onClick={() => {
+                  sendFriendReq(e.userId);
+                }}
+                variant="warning"
+              >
+                Add
+              </Button>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      )}
+    </div>
   );
 }

@@ -105,4 +105,107 @@ router.get("/suggestions", async (req, res) => {
   }
 });
 
+router.get("/requests", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+
+    let data = [];
+    let result = await Connections.find({
+      to: userId,
+      status: "pending",
+    });
+
+    for (let i = 0; i < result.length; i++) {
+      const currUser = result[i];
+
+      const userProfile = await UserModel.findById(currUser.from);
+
+      data.push({
+        userId: userProfile._id,
+        name: userProfile.name,
+      });
+    }
+
+    res.send({
+      code: "SUCCESS",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.get("/accept/:userId", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let receiver = req.params.userId;
+
+    let result = await Connections.findOne({
+      from: receiver,
+      to: userId,
+      status: "pending",
+    });
+
+    console.log(result);
+
+    result.status = "accepted";
+    await result.save();
+
+    res.send({
+      code: "SUCCESS",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.get("/friends", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+
+    let data = [];
+    let result1 = await Connections.find({
+      to: userId,
+      status: "accepted",
+    });
+
+    let result2 = await Connections.find({
+      from: userId,
+      status: "accepted",
+    });
+
+    let result = result1.concat(result2);
+
+    for (let i = 0; i < result.length; i++) {
+      const currUser = result[i];
+
+      const userProfile = await UserModel.findById(currUser.from);
+
+      data.push({
+        userId: userProfile._id,
+        name: userProfile.name,
+      });
+    }
+
+    res.send({
+      code: "SUCCESS",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
 module.exports = router;

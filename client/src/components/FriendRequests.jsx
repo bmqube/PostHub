@@ -10,24 +10,21 @@ export default function FriendRequests() {
 
   useEffect(() => {
     async function getData() {
-      let response = await axios.get(
-        "http://localhost:8000/connect/suggestions",
-        {
-          headers: {
-            userId: isAlreadyLogged,
-          },
-        }
-      );
+      let response = await axios.get("http://localhost:8000/connect/requests", {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      });
+      // console.log(response.data);
       setListOfUsers(response.data.data);
     }
     getData();
   }, [effect]);
 
-  const sendFriendReq = async (receiver) => {
+  const acceptFriendReq = async (receiver) => {
     // e.preventDefault();
-    let response = await axios.post(
-      "http://localhost:8000/connect/send/" + receiver,
-      {},
+    let response = await axios.get(
+      "http://localhost:8000/connect/accept/" + receiver,
       {
         headers: {
           userId: isAlreadyLogged,
@@ -41,30 +38,34 @@ export default function FriendRequests() {
   };
 
   return (
-    <>
+    <div className="mb-3">
       <h3 className="text-white">Friend Requests</h3>
-      <ListGroup className="my-3 bg-dark">
-        {listOfUsers.map((e, index) => (
-          <ListGroup.Item
-            as="li"
-            key={index}
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">{e.name}</div>
-              <div className="text-muted">Still Working</div>
-            </div>
-            <Button
-              onClick={() => {
-                sendFriendReq(e.userId);
-              }}
-              variant="warning"
+      {listOfUsers.length === 0 ? (
+        <p className="text-white">No Friend Requests</p>
+      ) : (
+        <ListGroup className="my-3 bg-dark">
+          {listOfUsers.map((e, index) => (
+            <ListGroup.Item
+              as="li"
+              key={index}
+              className="d-flex justify-content-between align-items-start"
             >
-              Add
-            </Button>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-    </>
+              <div className="ms-2 me-auto">
+                <div className="fw-bold">{e.name}</div>
+                <div className="text-muted">Still Working</div>
+              </div>
+              <Button
+                onClick={() => {
+                  acceptFriendReq(e.userId);
+                }}
+                variant="warning"
+              >
+                Accept
+              </Button>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      )}
+    </div>
   );
 }

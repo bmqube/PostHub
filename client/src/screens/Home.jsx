@@ -12,10 +12,12 @@ import Newsfeed from "../components/Newsfeed";
 import Suggestions from "../components/Suggestions";
 import Footer from "../components/Footer";
 import CreatePost from "../components/CreatePost";
+import Connections from "../components/Connections";
 
 function Home() {
   const isAlreadyLogged = localStorage.getItem("userId");
   const [key, setKey] = useState("newsfeed");
+  const [effect, setEffect] = useState(true);
 
   return (
     <Container>
@@ -36,14 +38,14 @@ function Home() {
               fill
             >
               <Tab eventKey="newsfeed" title="Home">
-                <CreatePost />
-                <Newsfeed />
+                <CreatePost effect={effect} setEffect={setEffect} />
+                <Newsfeed effect={effect} />
               </Tab>
               <Tab eventKey="profile" title="Profile">
                 <Profile />
               </Tab>
               <Tab eventKey="connections" title="Connections">
-                <Suggestions />
+                <Connections />
               </Tab>
             </Tabs>
           </div>

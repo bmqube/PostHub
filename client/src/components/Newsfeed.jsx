@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SinglePost from "./SinglePost";
+import axios from "axios";
 
-export default function Newsfeed() {
+export default function Newsfeed({ effect }) {
+  const [listOfPost, setListOfPost] = useState([]);
+  const isAlreadyLogged = localStorage.getItem("userId");
+
+  useEffect(() => {
+    async function getData() {
+      let response = await axios.get("http://localhost:8000/post/feed", {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      });
+      console.log(response.data);
+      setListOfPost(response.data.data);
+    }
+    getData();
+  }, [effect]);
+
   return (
     <div className="text-white mb-3">
-      <SinglePost />
-      <SinglePost />
+      {listOfPost.length === 0 ? (
+        <></>
+      ) : (
+        listOfPost.map((e, index) => <SinglePost key={index} post={e} />)
+      )}
     </div>
   );
 }
