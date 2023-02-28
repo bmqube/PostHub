@@ -13,28 +13,45 @@ body {
 }
 
 .tab > .nav-item > .active {
-  color: #000 !important;
+  background-color: #282828 !important;
+  color: #fff !important;
 }
 
 .level1 {
-  background-color: #282828;
+  background-color: #282828 !important;
 }
 
 .level2 {
-  background-color: #373737;
+  background-color: #373737 !important;
 }
 
 .level3 {
-  background-color: #4A4A4A;
+  background-color: #4A4A4A !important;
 }
 
 .level4 {
-  background-color: #828282;
+  background-color: #828282 !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.consistent-height .tab-content {
+  display: flex;
+}
+
+.consistent-height .tab-content>.tab-pane {
+  display: block;
+  /* undo "display: none;" */
+  visibility: hidden;
+  margin-right: -100%;
+  width: 100%;
+}
+
+.consistent-height .tab-content>.active {
+  visibility: visible;
 }
 
 /* .btn-outline-warning .text-white:hover {

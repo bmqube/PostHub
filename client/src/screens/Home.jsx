@@ -9,8 +9,9 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Profile from "../components/Profile";
 import Newsfeed from "../components/Newsfeed";
-import Connections from "../components/Connections";
+import Suggestions from "../components/Suggestions";
 import Footer from "../components/Footer";
+import CreatePost from "../components/CreatePost";
 
 function Home() {
   const isAlreadyLogged = localStorage.getItem("userId");
@@ -25,24 +26,27 @@ function Home() {
       >
         <Col xs="10" md="8" lg="6" xl="5" className="level1 px-5">
           <Header />
-          <Tabs
-            id="controlled-tab-example"
-            activeKey={key}
-            onSelect={(k) => setKey(k)}
-            className="mb-3 tab"
-            justify
-            fill
-          >
-            <Tab eventKey="newsfeed" title="Home">
-              <Newsfeed />
-            </Tab>
-            <Tab eventKey="profile" title="Profile">
-              <Profile />
-            </Tab>
-            <Tab eventKey="connections" title="Connections">
-              <Connections />
-            </Tab>
-          </Tabs>
+          <div className="consistent-height">
+            <Tabs
+              id="controlled-tab-example"
+              activeKey={key}
+              onSelect={(k) => setKey(k)}
+              className="mb-3 tab"
+              justify
+              fill
+            >
+              <Tab eventKey="newsfeed" title="Home">
+                <CreatePost />
+                <Newsfeed />
+              </Tab>
+              <Tab eventKey="profile" title="Profile">
+                <Profile />
+              </Tab>
+              <Tab eventKey="connections" title="Connections">
+                <Suggestions />
+              </Tab>
+            </Tabs>
+          </div>
           <Footer />
         </Col>
       </Row>
