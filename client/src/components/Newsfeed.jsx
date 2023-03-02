@@ -22,7 +22,7 @@ export default function Newsfeed({ effect }) {
   return (
     <div className="text-white mb-3">
       {listOfPost.length === 0 ? (
-        <></>
+        <p className="text-white text-center">There are no items to show</p>
       ) : (
         listOfPost.map((e, index) => <SinglePost key={index} post={e} />)
       )}

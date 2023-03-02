@@ -42,7 +42,8 @@ function Home() {
                 <Newsfeed effect={effect} />
               </Tab>
               <Tab eventKey="profile" title="Profile">
-                <Profile />
+                <CreatePost effect={effect} setEffect={setEffect} />
+                <Profile effect={effect} />
               </Tab>
               <Tab eventKey="connections" title="Connections">
                 <Connections />

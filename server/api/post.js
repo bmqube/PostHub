@@ -59,4 +59,24 @@ router.get("/feed", async (req, res) => {
   }
 });
 
+router.get("/feed/mine", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let result = await Post.find({
+      creator: userId,
+    });
+
+    res.send({
+      code: "SUCCESS",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
 module.exports = router;

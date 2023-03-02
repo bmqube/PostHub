@@ -1,11 +1,14 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 
-export default function SinglePost({ post }) {
+export default function SinglePost({ post, user }) {
+  const username = localStorage.getItem("name");
   return (
     <Card className="level2 mb-3">
       <Card.Body>
-        <Card.Title>{post.createdBy}</Card.Title>
+        <Card.Title>
+          {user && user === "Self" ? username : post.createdBy}
+        </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           {new Date(Date.parse(post.createdAt)).toLocaleString().split(",")}
         </Card.Subtitle>

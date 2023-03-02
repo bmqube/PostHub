@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from "react";
-import ListGroup from "react-bootstrap/ListGroup";
+import SinglePost from "./SinglePost";
 import axios from "axios";
-import { Badge, Button } from "react-bootstrap";
 
-export default function Profile() {
+export default function Profile({ effect }) {
+  const [listOfPost, setListOfPost] = useState([]);
   const isAlreadyLogged = localStorage.getItem("userId");
-  // const [profileDetails, setProfileDetails] = useState({
-  //   name: "",
-  // });
 
-  // useEffect(() => {
-  //   async function getData() {
-  //     let response = await axios.get(
-  //       "http://localhost:8000/connect/suggestions",
-  //       {
-  //         headers: {
-  //           userId: isAlreadyLogged,
-  //         },
-  //       }
-  //     );
-  //     setProfileDetails(response.data.data);
-  //   }
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    async function getData() {
+      let response = await axios.get("http://localhost:8000/post/feed/mine", {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      });
+      // console.log(response.data);
+      setListOfPost(response.data.data);
+    }
+    getData();
+  }, [effect]);
 
-  return <div className="text-white mb-3">Profile</div>;
+  return (
+    <div className="text-white mb-3">
+      {listOfPost.length === 0 ? (
+        <p className="text-white text-center">
+          You have not made a post yet. Post now?
+        </p>
+      ) : (
+        listOfPost.map((e, index) => (
+          <SinglePost key={index} post={e} user="Self" />
+        ))
+      )}
+    </div>
+  );
 }
