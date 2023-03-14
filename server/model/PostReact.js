@@ -1,20 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const Post = new Schema({
-  creator: {
+const PostReact = new Schema({
+  postId: {
     type: String,
   },
-  message: {
+  userId: {
     type: String,
-  },
-  status: {
-    type: String,
-    default: "Active",
-  },
-  privacy: {
-    type: String,
-    enum: ["public", "friends", "me"],
   },
   existence: {
     type: Number,
@@ -26,4 +18,4 @@ const Post = new Schema({
   },
 });
 
-module.exports = mongoose.model("Post", Post);
+module.exports = mongoose.model("PostReact", PostReact);
