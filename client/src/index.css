@@ -17,6 +17,10 @@ body {
   color: #fff !important;
 }
 
+.level0 {
+  background-color: #141414 !important;
+}
+
 .level1 {
   background-color: #282828 !important;
 }

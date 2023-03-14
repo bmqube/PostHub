@@ -21,10 +21,10 @@ export default function Header() {
     //   </Button>
     // </div>
 
-    <Navbar>
+    <Navbar className="level1">
       <Container>
         <Navbar.Brand
-          className="text-warning fw-bold fs-3 font-monospace"
+          className="text-warning fw-bold fs-3 ps-3 font-monospace"
           href="/"
         >
           PostHub

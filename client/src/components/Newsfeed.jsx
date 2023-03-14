@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SinglePost from "./SinglePost";
 import axios from "axios";
 
-export default function Newsfeed({ effect }) {
+export default function Newsfeed({ effect, setEffect }) {
   const [listOfPost, setListOfPost] = useState([]);
   const isAlreadyLogged = localStorage.getItem("userId");
 
@@ -13,7 +13,7 @@ export default function Newsfeed({ effect }) {
           userId: isAlreadyLogged,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       setListOfPost(response.data.data);
     }
     getData();
@@ -24,7 +24,14 @@ export default function Newsfeed({ effect }) {
       {listOfPost.length === 0 ? (
         <p className="text-white text-center">There are no items to show</p>
       ) : (
-        listOfPost.map((e, index) => <SinglePost key={index} post={e} />)
+        listOfPost.map((e, index) => (
+          <SinglePost
+            key={index}
+            post={e}
+            effect={effect}
+            setEffect={setEffect}
+          />
+        ))
       )}
     </div>
   );

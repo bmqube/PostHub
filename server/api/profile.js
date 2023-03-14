@@ -8,28 +8,38 @@ const UserSession = require("../model/UserSession");
 const Connections = require("../model/Connections");
 const Post = require("../model/Post");
 
-router.get("/friends/recent", async (req, res) => {
-  try {
-    let userId = req.headers.userid;
+// router.get("/friends", async (req, res) => {
+//   try {
+//     let userId = req.headers.userid;
 
-    let newPost = new Post({
-      creator: userId,
-      message: message,
-      privacy: privacy,
-    });
+//     let data = [];
 
-    await newPost.save();
+//     let friends1 = await Connections.find({
+//       from: userId,
+//       status: "accepted",
+//     });
 
-    res.send({
-      code: "SUCCESS",
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      code: "FAIL",
-      message: "Something Went Wrong",
-    });
-  }
-});
+//     let friends2 = await Connections.find({
+//       to: userId,
+//       status: "accepted",
+//     });
+
+//     for (let i = 0; i < friends1.length; i++) {
+//       const fren = friends1[i];
+
+//       let
+//     }
+
+//     res.send({
+//       code: "SUCCESS",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.send({
+//       code: "FAIL",
+//       message: "Something Went Wrong",
+//     });
+//   }
+// });
 
 module.exports = router;

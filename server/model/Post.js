@@ -15,6 +15,7 @@ const Post = new Schema({
   privacy: {
     type: String,
     enum: ["public", "friends", "me"],
+    default: "public",
   },
   existence: {
     type: Number,

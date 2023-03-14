@@ -38,20 +38,19 @@ router.post("/create", async (req, res) => {
 router.post("/react", async (req, res) => {
   try {
     let userId = req.headers.userid;
-    let postId = req.body.postid;
+    let postId = req.body.postId;
 
-    let res = await PostReact.find({
+    // console.log(req.body);
+
+    let result = await PostReact.findOne({
       postId: postId,
       userId: userId,
-    })
-      .limit(1)
-      .sort({ $natural: -1 });
+    });
 
-    if (res.length) {
-      res = res[0];
-      res = 1 - res.existence;
+    if (result) {
+      result.existence = 1 - result.existence;
 
-      await res.save();
+      await result.save();
     } else {
       let newReact = new PostReact({
         postId: postId,
@@ -76,7 +75,7 @@ router.post("/react", async (req, res) => {
 router.get("/feed", async (req, res) => {
   try {
     let userId = req.headers.userid;
-    let result = await Post.find({});
+    let result = await Post.find({}).sort({ createdAt: -1 });
 
     let data = [];
 
@@ -101,15 +100,22 @@ router.get("/feed", async (req, res) => {
         }
       }
       const createdBy = await UserModel.findById(post.creator);
-      let res = await PostReact.find({
-        postId: post._id,
+      let reacted = await PostReact.find({
+        postId: post._id.toString(),
         userId: userId,
         existence: 1,
       });
 
-      post.reacted = res.length > 0;
-      post.createdBy = createdBy.name;
-      data.push(post);
+      let temp = {
+        createdAt: post.createdAt,
+        creator: post.creator,
+        createdBy: createdBy.name,
+        message: post.message,
+        _id: post._id.toString(),
+        reacted: reacted.length > 0,
+        privacy: post.privacy,
+      };
+      data.push(temp);
 
       if (data.length === 10) {
         break;

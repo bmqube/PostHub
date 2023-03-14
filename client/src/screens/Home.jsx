@@ -1,6 +1,7 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Nav from "react-bootstrap/Nav";
 import Header from "../components/Header";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
@@ -24,10 +25,10 @@ function Home() {
         className="justify-content-center align-items-center"
         style={{ minHeight: "100vh" }}
       >
-        <Col xs="10" md="8" lg="6" xl="5" className="level1 px-5">
+        <Col sm="10" className="level1 p-0">
           <Header />
-          <div className="consistent-height">
-            <Tabs
+          <div className="consistent-height px-5">
+            {/* <Tabs
               id="controlled-tab-example"
               activeKey={key}
               onSelect={(k) => setKey(k)}
@@ -37,7 +38,7 @@ function Home() {
             >
               <Tab eventKey="newsfeed" title="Home">
                 <CreatePost effect={effect} setEffect={setEffect} />
-                <Newsfeed effect={effect} />
+                <Newsfeed effect={effect} setEffect={setEffect} />
               </Tab>
               <Tab eventKey="profile" title="Profile">
                 <CreatePost effect={effect} setEffect={setEffect} />
@@ -46,7 +47,40 @@ function Home() {
               <Tab eventKey="connections" title="Connections">
                 <Connections />
               </Tab>
-            </Tabs>
+            </Tabs> */}
+
+            <Tab.Container id="sidebar" defaultActiveKey={key}>
+              <Row className="mt-4">
+                <Col sm={3}>
+                  <Nav variant="tabs" className="flex-column">
+                    <Nav.Item>
+                      <Nav.Link eventKey="newsfeed">Home</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="profile">Profile</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="connections">Connections</Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </Col>
+                <Col sm={9}>
+                  <Tab.Content>
+                    <Tab.Pane eventKey="newsfeed" title="Home">
+                      <CreatePost effect={effect} setEffect={setEffect} />
+                      <Newsfeed effect={effect} setEffect={setEffect} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="profile" title="Profile">
+                      <CreatePost effect={effect} setEffect={setEffect} />
+                      <Profile effect={effect} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="connections" title="Connections">
+                      <Connections />
+                    </Tab.Pane>
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
           </div>
           <Footer />
         </Col>
