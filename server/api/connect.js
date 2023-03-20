@@ -88,6 +88,7 @@ router.get("/suggestions", async (req, res) => {
         data.push({
           userId: currUser._id,
           name: currUser.name,
+          dp: currUser.dp,
         });
       }
     }
@@ -123,6 +124,7 @@ router.get("/requests", async (req, res) => {
       data.push({
         userId: userProfile._id,
         name: userProfile.name,
+        dp: userProfile.dp,
       });
     }
 
@@ -192,6 +194,7 @@ router.get("/friends", async (req, res) => {
       data.push({
         userId: userProfile._id,
         name: userProfile.name,
+        dp: userProfile.dp,
       });
     }
 

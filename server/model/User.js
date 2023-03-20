@@ -10,6 +10,7 @@ const UserSchema = new Schema({
   password: String,
   birthdate: Date,
   gender: String,
+  dp: String,
 });
 
 module.exports = mongoose.model("UserModel", UserSchema);

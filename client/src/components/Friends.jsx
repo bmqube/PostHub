@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import axios from "axios";
-import { Badge, Button } from "react-bootstrap";
+import { Badge, Button, PageHeader, Image } from "react-bootstrap";
 import avatar from "../files/avatar.png";
 
-export default function Suggestions() {
+export default function Friends() {
   const isAlreadyLogged = localStorage.getItem("userId");
   const [listOfUsers, setListOfUsers] = useState([]);
   const [effect, setEffect] = useState(false);
@@ -12,41 +12,24 @@ export default function Suggestions() {
 
   useEffect(() => {
     async function getData() {
-      let response = await axios.get(
-        "http://localhost:8000/connect/suggestions",
-        {
-          headers: {
-            userId: isAlreadyLogged,
-          },
-        }
-      );
+      let response = await axios.get("http://localhost:8000/profile/friends", {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      });
+      // console.log(response.data);
       setListOfUsers(response.data.data);
     }
     getData();
   }, [effect]);
 
-  const sendFriendReq = async (receiver) => {
-    // e.preventDefault();
-    let response = await axios.post(
-      "http://localhost:8000/connect/send/" + receiver,
-      {},
-      {
-        headers: {
-          userId: isAlreadyLogged,
-        },
-      }
-    );
-
-    // console.log(response);
-
-    setEffect(!effect);
-  };
-
   return (
     <div className="mb-3">
-      <h3 className="text-white">Suggestions</h3>
+      <h3 className="text-white">Friends</h3>
       {listOfUsers.length === 0 ? (
-        <p className="text-white">No Friend Requests</p>
+        <p className="text-white">
+          You don't have any friends. Go out and make some.
+        </p>
       ) : (
         <ListGroup className="my-3 bg-dark">
           {listOfUsers.map((e, index) => (
@@ -66,14 +49,9 @@ export default function Suggestions() {
                   <div className="text-muted">Still Working</div>
                 </div>
               </div>
-              <Button
-                onClick={() => {
-                  sendFriendReq(e.userId);
-                }}
-                variant="warning"
-              >
-                Add
-              </Button>
+              <a href={`/profile/${e.userId}`} class="btn btn-warning">
+                View Profile
+              </a>
             </ListGroup.Item>
           ))}
         </ListGroup>
