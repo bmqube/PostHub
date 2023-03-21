@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
+import { MDBBtn, MDBInputGroup, MDBTextArea } from "mdb-react-ui-kit";
 
 export default function CreatePost({ effect, setEffect }) {
   const isAlreadyLogged = localStorage.getItem("userId");
@@ -36,8 +37,8 @@ export default function CreatePost({ effect, setEffect }) {
     }
   };
   return (
-    <InputGroup className="mb-3">
-      <Form.Control
+    <MDBInputGroup className="mb-3">
+      {/* <Form.Control
         as="textarea"
         rows={2}
         placeholder="What's on your mind?"
@@ -46,10 +47,20 @@ export default function CreatePost({ effect, setEffect }) {
         }}
         value={message}
         className="level3 text-white"
+      /> */}
+      <MDBTextArea
+        className="level3 text-white"
+        label="What's on your mind?"
+        onChange={(e) => {
+          setMessage(e.target.value);
+        }}
+        value={message}
+        id="textAreaExample"
+        rows={3}
       />
-      <Button variant="outline-warning" onClick={createPost} id="button-addon2">
+      <MDBBtn color="warning" outline onClick={createPost} id="button-addon2">
         Post
-      </Button>
-    </InputGroup>
+      </MDBBtn>
+    </MDBInputGroup>
   );
 }

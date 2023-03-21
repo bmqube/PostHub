@@ -8,6 +8,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Register from "./screens/Register";
 import Home from "./screens/Home";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import ConnectionsPage from "./screens/ConnectionsPage";
+import ProfilePage from "./screens/ProfilePage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,6 +20,9 @@ root.render(
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/connections" element={<ConnectionsPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile/:userId" element={<ProfilePage />} />
     </Routes>
   </BrowserRouter>
 );

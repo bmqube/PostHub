@@ -35,10 +35,15 @@ export default function Header() {
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text className="text-white">
                 Signed in as:{" "}
-                <a className="text-white" href="#login">
+                <a className="text-white" href="/profile">
                   {name}
                 </a>
               </Navbar.Text>
+              {/* <img
+                src={!e.dp || e.dp === "" ? avatar : imageLink + e.dp}
+                className="img-thumbnail"
+                width="50px"
+              /> */}
             </Navbar.Collapse>
           </>
         )}

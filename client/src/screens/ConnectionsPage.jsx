@@ -14,8 +14,9 @@ import CreatePost from "../components/CreatePost";
 import Connections from "../components/Connections";
 import Sidebar from "../components/Sidebar";
 
-function Home() {
+function ConnectionsPage() {
   const isAlreadyLogged = localStorage.getItem("userId");
+  const [key, setKey] = useState("newsfeed");
   const [effect, setEffect] = useState(true);
 
   return (
@@ -84,11 +85,10 @@ function Home() {
             </Tab.Container> */}
             <Row className="mt-4">
               <Col sm={3}>
-                <Sidebar link="Home" />
+                <Sidebar link="Connections" />
               </Col>
               <Col sm={9}>
-                <CreatePost effect={effect} setEffect={setEffect} />
-                <Newsfeed effect={effect} setEffect={setEffect} />
+                <Connections />
               </Col>
             </Row>
           </div>
@@ -99,4 +99,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default ConnectionsPage;

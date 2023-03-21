@@ -57,6 +57,7 @@ router.get("/friends", async (req, res) => {
 
 router.post("/update/dp", async (req, res) => {
   try {
+    console.log(req.body);
     let userId = req.headers.userid;
     let dp = req.files.dp;
     let dir = path.join(__dirname, "../files");
@@ -72,6 +73,32 @@ router.post("/update/dp", async (req, res) => {
     res.send({
       code: "SUCCESS",
       message: "Profile picture updated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    let profileId = req.params.id;
+    let userId = req.headers.userid;
+
+    if (profileId === "my") {
+      profileId = userId;
+    }
+
+    let profile = await UserModel.findById(profileId, {
+      password: 0,
+    });
+
+    res.send({
+      code: "SUCCESS",
+      data: profile,
     });
   } catch (error) {
     console.log(error);
