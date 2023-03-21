@@ -37,9 +37,10 @@ export default function CreatePost({ effect, setEffect }) {
     }
   };
   return (
-    <MDBInputGroup className="mb-3">
-      {/* <Form.Control
+    <MDBInputGroup style={{ width: "100%" }} className="mb-3">
+      <Form.Control
         as="textarea"
+        style={{ height: "100%" }}
         rows={2}
         placeholder="What's on your mind?"
         onChange={(e) => {
@@ -47,8 +48,8 @@ export default function CreatePost({ effect, setEffect }) {
         }}
         value={message}
         className="level3 text-white"
-      /> */}
-      <MDBTextArea
+      />
+      {/* <MDBTextArea
         className="level3 text-white"
         label="What's on your mind?"
         onChange={(e) => {
@@ -57,7 +58,7 @@ export default function CreatePost({ effect, setEffect }) {
         value={message}
         id="textAreaExample"
         rows={3}
-      />
+      /> */}
       <MDBBtn color="warning" outline onClick={createPost} id="button-addon2">
         Post
       </MDBBtn>

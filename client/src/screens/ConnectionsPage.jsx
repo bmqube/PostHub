@@ -28,7 +28,10 @@ function ConnectionsPage() {
       >
         <Col sm="10" className="level1 p-0">
           <Header />
-          <div className="consistent-height px-5">
+          <div
+            style={{ minHeight: "100vh" }}
+            className="consistent-height px-5"
+          >
             {/* <Tabs
               id="controlled-tab-example"
               activeKey={key}

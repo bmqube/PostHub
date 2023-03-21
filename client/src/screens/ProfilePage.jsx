@@ -27,7 +27,10 @@ function ProfilePage() {
       >
         <Col sm="10" className="level1 p-0">
           <Header />
-          <div className="consistent-height px-5">
+          <div
+            style={{ minHeight: "100vh" }}
+            className="consistent-height px-5"
+          >
             <Row className="mt-4">
               <Col sm={12} md={3}>
                 <Sidebar link="Profile" />

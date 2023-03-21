@@ -24,7 +24,13 @@ export default function Profile({ effect, setEffect }) {
   const [basicModal, setBasicModal] = useState(false);
   const [dp, setDp] = useState(null);
 
-  const toggleShow = () => setBasicModal(!basicModal);
+  let { userId } = useParams();
+
+  const toggleShow = () => {
+    if (!userId) {
+      setBasicModal(!basicModal);
+    }
+  };
 
   const selectFile = (e) => setDp(e.target.files[0]);
 
@@ -45,8 +51,6 @@ export default function Profile({ effect, setEffect }) {
       setBasicModal(!basicModal);
     }
   };
-
-  let { userId } = useParams();
 
   // console.log(userId);
 
@@ -75,7 +79,7 @@ export default function Profile({ effect, setEffect }) {
       });
       // console.log(response.data);
       if (response.data.code === "SUCCESS") {
-        // console.log(response.data.data);
+        console.log(response.data.data);
         setProfileDetails(response.data.data);
       }
     }
@@ -86,14 +90,26 @@ export default function Profile({ effect, setEffect }) {
     <>
       <div className="text-center">
         <MDBCol onClick={toggleShow} className="mb-4">
-          <img
-            src={avatar}
-            className="border border-3 border-warning rounded-circle"
-            alt=""
-            width={200}
-            height={200}
-          />
+          {profileDetails.dp === "" ? (
+            <img
+              src={avatar}
+              className="border border-3 border-warning rounded-circle"
+              alt=""
+              width={200}
+              height={200}
+            />
+          ) : (
+            <img
+              src={`http://localhost:8000/public/${profileDetails.dp}`}
+              className="border border-3 border-warning rounded-circle"
+              alt=""
+              width={200}
+              height={200}
+            />
+          )}
         </MDBCol>
+        <p class="fw-bold text-white fs-3">{profileDetails.name}</p>
+        <p class="text-muted">{"Just Another Random Guy"}</p>
       </div>
       <CreatePost effect={effect} setEffect={setEffect} />
       <div className="text-white mb-3">
