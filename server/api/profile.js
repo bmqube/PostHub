@@ -39,7 +39,12 @@ router.get("/friends", async (req, res) => {
 
       const fren = await UserModel.findById(curr_id.from);
 
-      data.push({ userId: fren._id, name: fren.name, dp: fren.dp });
+      data.push({
+        userId: fren._id,
+        name: fren.name,
+        email: fren.email,
+        dp: fren.dp,
+      });
     }
 
     res.send({

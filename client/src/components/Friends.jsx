@@ -46,7 +46,7 @@ export default function Friends() {
                 />
                 <div className="ms-3">
                   <div className="fw-bold">{e.name}</div>
-                  <div className="text-muted">Still Working</div>
+                  <div className="text-muted">{e.email}</div>
                 </div>
               </div>
               <a href={`/profile/${e.userId}`} class="btn btn-warning">
