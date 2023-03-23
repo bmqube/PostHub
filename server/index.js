@@ -16,7 +16,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(expressFileupload());
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "OPTIONS"],
+  },
+});
 
 app.use(express.json({ limit: "500mb" }));
 app.use(
@@ -28,7 +33,11 @@ app.use(
 require("./db");
 
 io.on("connection", (socket) => {
-  console.log(socket);
+  socket.on("setRoom", (userId) => {
+    // console.log(userId);
+    socket.join(userId);
+  });
+  io.to("6418832aa68b47dd201d38e2").emit("message", "hogamara kha");
 });
 
 app.use("/auth", require("./api/auth"));

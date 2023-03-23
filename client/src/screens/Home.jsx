@@ -13,10 +13,23 @@ import Footer from "../components/Footer";
 import CreatePost from "../components/CreatePost";
 import Connections from "../components/Connections";
 import Sidebar from "../components/Sidebar";
+import { io } from "socket.io-client";
 
 function Home() {
   const isAlreadyLogged = localStorage.getItem("userId");
   const [effect, setEffect] = useState(true);
+
+  console.log(isAlreadyLogged);
+
+  if (isAlreadyLogged) {
+    const socket = io("http://localhost:8000");
+    socket.on("connect", () => {
+      socket.emit("setRoom", isAlreadyLogged);
+      socket.on("message", (e) => {
+        console.log(e);
+      });
+    });
+  }
 
   return (
     <Container>

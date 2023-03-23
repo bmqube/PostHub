@@ -6,7 +6,7 @@ export default function SinglePost({ post, user, effect, setEffect }) {
   const username = localStorage.getItem("name");
   const isAlreadyLogged = localStorage.getItem("userId");
 
-  console.log(post);
+  // console.log(post);
 
   const reactPost = async (e) => {
     e.preventDefault();

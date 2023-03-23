@@ -1,8 +1,5 @@
-import logo from './logo.svg';
-import './App.css';
-import { io } from "socket.io-client";
-
-// const socket = io("http://localhost:8000");
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
   return (
