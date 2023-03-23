@@ -32,10 +32,10 @@ function ProfilePage() {
             className="consistent-height px-5"
           >
             <Row className="mt-4">
-              <Col sm={12} md={3}>
+              <Col sm={12} lg={3}>
                 <Sidebar link="Profile" />
               </Col>
-              <Col sm={12} md={9}>
+              <Col sm={12} lg={9}>
                 <Profile effect={effect} setEffect={setEffect} />
               </Col>
             </Row>
