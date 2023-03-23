@@ -12,6 +12,9 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import ConnectionsPage from "./screens/ConnectionsPage";
 import ProfilePage from "./screens/ProfilePage";
+import MessagePage from "./screens/MessagePage";
+import NotificationPage from "./screens/NotificationPage";
+import MessageDetails from "./screens/MessageDetails";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -23,6 +26,9 @@ root.render(
       <Route path="/connections" element={<ConnectionsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/profile/:userId" element={<ProfilePage />} />
+      <Route path="/messages" element={<MessagePage />} />
+      <Route path="/notifications" element={<NotificationPage />} />
+      <Route path="/message/:userId" element={<MessageDetails />} />
     </Routes>
   </BrowserRouter>
 );

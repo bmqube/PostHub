@@ -16,7 +16,12 @@ export default function Sidebar({ link }) {
     {
       title: "Profile",
       link: "/profile",
-      icon: "fa-solid fa-user",
+      icon: "fa-solid fa-circle-user fa-lg",
+    },
+    {
+      title: "Messages",
+      link: "/messages",
+      icon: "fa-solid fa-message",
     },
     {
       title: "Connections",
@@ -26,7 +31,7 @@ export default function Sidebar({ link }) {
     {
       title: "Notifications",
       link: "/notifications",
-      icon: "fa-solid fa-bell",
+      icon: "fa-solid fa-bell fa-lg",
     },
   ];
   return (

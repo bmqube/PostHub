@@ -7,8 +7,9 @@ import { Navigate } from "react-router-dom";
 import Profile from "../components/Profile";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
+import Messages from "../components/Messages";
 
-function ProfilePage() {
+function NotificationPage() {
   const isAlreadyLogged = localStorage.getItem("userId");
   const [effect, setEffect] = useState(true);
 
@@ -27,10 +28,10 @@ function ProfilePage() {
           >
             <Row className="mt-4">
               <Col sm={12} lg={3}>
-                <Sidebar link="Profile" />
+                <Sidebar link="Notifications" />
               </Col>
               <Col sm={12} lg={9}>
-                <Profile effect={effect} setEffect={setEffect} />
+                <Messages />
               </Col>
             </Row>
           </div>
@@ -41,4 +42,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default NotificationPage;

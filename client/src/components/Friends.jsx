@@ -24,7 +24,7 @@ export default function Friends() {
   }, [effect]);
 
   return (
-    <div className="mb-3">
+    <div className="mb-5">
       <h3 className="text-white">Friends</h3>
       {listOfUsers.length === 0 ? (
         <p className="text-white">
@@ -36,7 +36,7 @@ export default function Friends() {
             <ListGroup.Item
               as="li"
               key={index}
-              className="d-flex justify-content-between align-items-start"
+              className="d-flex justify-content-between align-items-start level2"
             >
               <div className="d-flex ms-2">
                 <img
@@ -45,7 +45,7 @@ export default function Friends() {
                   width="50px"
                 />
                 <div className="ms-3">
-                  <div className="fw-bold">{e.name}</div>
+                  <div className="fw-bold text-white">{e.name}</div>
                   <div className="text-muted">{e.email}</div>
                 </div>
               </div>

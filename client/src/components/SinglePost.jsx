@@ -10,7 +10,6 @@ export default function SinglePost({ post, user, effect, setEffect }) {
 
   const reactPost = async (e) => {
     e.preventDefault();
-    // console.log(post._id);
     let response = await axios.post(
       "http://localhost:8000/post/react/",
       {
@@ -22,7 +21,6 @@ export default function SinglePost({ post, user, effect, setEffect }) {
         },
       }
     );
-    // console.log(response);
     setEffect(!effect);
   };
 
@@ -43,7 +41,12 @@ export default function SinglePost({ post, user, effect, setEffect }) {
         <Card.Subtitle className="mb-2 text-muted">
           <small>
             {new Date(Date.parse(post.createdAt)).toLocaleString().split(",")}
-            {` (${post.privacy})`}
+            {/* {` (${post.privacy})`} */}
+            <i
+              class={`fa-solid ${
+                post.privacy === "public" ? "fa-earth-asia" : "fa-user-group"
+              }`}
+            ></i>
           </small>
         </Card.Subtitle>
         <Card.Text>{post.message}</Card.Text>

@@ -9,6 +9,8 @@ const Connections = require("../model/Connections");
 const Post = require("../model/Post");
 const PostReact = require("../model/PostReact");
 
+const server = require("../server.js");
+
 router.post("/create", async (req, res) => {
   try {
     let userId = req.headers.userid;
@@ -36,6 +38,7 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/react", async (req, res) => {
+  // console.log(server.io);
   try {
     let userId = req.headers.userid;
     let postId = req.body.postId;
@@ -46,6 +49,9 @@ router.post("/react", async (req, res) => {
       postId: postId,
       userId: userId,
     });
+
+    let post = await Post.findById(postId);
+    server.io.to(post.creator).emit("message", "reaction");
 
     if (result) {
       result.existence = 1 - result.existence;
