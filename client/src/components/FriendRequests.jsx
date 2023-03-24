@@ -60,7 +60,7 @@ export default function FriendRequests() {
                 />
                 <div className="ms-3">
                   <div className="fw-bold">{e.name}</div>
-                  <div className="text-muted">Still Working</div>
+                  <div className="text-muted">{e.email}</div>
                 </div>
               </div>
               <Button

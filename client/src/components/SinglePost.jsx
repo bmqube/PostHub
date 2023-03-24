@@ -40,9 +40,11 @@ export default function SinglePost({ post, user, effect, setEffect }) {
         <Card.Link
           onClick={reactPost}
           href="#"
-          className="text-decoration-none text-warning"
+          className={`text-decoration-none text-${
+            post.reacted ? "primary" : "warning"
+          }`}
         >
-          {post.reacted ? "Unlike" : "Like"}
+          {post.reacted ? "Liked" : "Like"}
         </Card.Link>
         <Card.Link href="#" className="text-decoration-none text-warning">
           Comment

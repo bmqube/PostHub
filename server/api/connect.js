@@ -88,6 +88,7 @@ router.get("/suggestions", async (req, res) => {
         data.push({
           userId: currUser._id,
           name: currUser.name,
+          email: currUser.email,
           dp: currUser.dp,
         });
       }
@@ -124,6 +125,7 @@ router.get("/requests", async (req, res) => {
       data.push({
         userId: userProfile._id,
         name: userProfile.name,
+        email: userProfile.email,
         dp: userProfile.dp,
       });
     }
