@@ -90,7 +90,7 @@ export default function Profile({ effect, setEffect }) {
     <>
       <div className="text-center">
         <MDBCol onClick={toggleShow} className="mb-4">
-          {profileDetails.dp === "" ? (
+          {profileDetails.dp === undefined || profileDetails.dp === "" ? (
             <img
               src={avatar}
               className="border border-3 border-warning rounded-circle"

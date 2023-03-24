@@ -87,10 +87,10 @@ function ConnectionsPage() {
               </Row>
             </Tab.Container> */}
             <Row className="mt-4">
-              <Col sm={3}>
+              <Col sm={12} lg={3}>
                 <Sidebar link="Connections" />
               </Col>
-              <Col sm={9}>
+              <Col sm={12} lg={9}>
                 <Connections />
               </Col>
             </Row>

@@ -27,7 +27,10 @@ function Home() {
       >
         <Col sm="10" className="level1 p-0">
           <Header />
-          <div className="consistent-height px-5">
+          <div
+            style={{ minHeight: "100vh" }}
+            className="consistent-height px-5"
+          >
             {/* <Tabs
               id="controlled-tab-example"
               activeKey={key}
@@ -83,10 +86,10 @@ function Home() {
               </Row>
             </Tab.Container> */}
             <Row className="mt-4">
-              <Col sm={3}>
+              <Col sm={12} lg={3}>
                 <Sidebar link="Home" />
               </Col>
-              <Col sm={9}>
+              <Col sm={12} lg={9}>
                 <CreatePost effect={effect} setEffect={setEffect} />
                 <Newsfeed effect={effect} setEffect={setEffect} />
               </Col>
