@@ -30,4 +30,11 @@ app.use("/post", require("./api/post"));
 app.use("/profile", require("./api/profile"));
 app.use("/messages", require("./api/messages"));
 
+// app.get("/", async (req, res) => {
+
+//   res.send({
+//     code: "SUCCESS",
+//   });
+// });
+
 server.listen(8000);

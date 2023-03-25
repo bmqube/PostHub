@@ -16,6 +16,7 @@ import {
 import CreatePost from "./CreatePost";
 import avatar from "../files/avatar.png";
 import { useParams } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 export default function Profile({ effect, setEffect }) {
   const [listOfPost, setListOfPost] = useState([]);
@@ -48,11 +49,30 @@ export default function Profile({ effect, setEffect }) {
         }
       );
       // console.log(response.data);
+      setDp(null);
       setBasicModal(!basicModal);
+      setEffect(!effect);
     }
   };
 
   // console.log(userId);
+
+  const sendFriendReq = async (receiver) => {
+    // e.preventDefault();
+    let response = await axios.post(
+      "http://localhost:8000/connect/send/" + receiver,
+      {},
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      }
+    );
+
+    // console.log(response);
+
+    setEffect(!effect);
+  };
 
   useEffect(() => {
     async function getData() {
@@ -110,6 +130,25 @@ export default function Profile({ effect, setEffect }) {
         </MDBCol>
         <p class="fw-bold text-white fs-3">{profileDetails.name}</p>
         <p class="text-muted">{"Just Another Random Guy"}</p>
+      </div>
+      <div className="row justify-content-center mb-3">
+        <div className="col-md-4 col-6">
+          <div className="d-grid">
+            <Button
+              onClick={sendFriendReq}
+              variant="outline-secondary text-white"
+            >
+              Add Friend
+            </Button>
+          </div>
+        </div>
+        <div className="col-md-4 col-6">
+          <div className="d-grid">
+            <Button href={`/message/${userId}`} variant="outline-warning">
+              Message
+            </Button>
+          </div>
+        </div>
       </div>
       <CreatePost effect={effect} setEffect={setEffect} />
       <div className="text-white mb-3">

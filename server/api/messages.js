@@ -73,6 +73,12 @@ router.get("/", async (req, res) => {
   }
 });
 
+function meow(params) {
+  return 12000;
+}
+
+const meow = (params) => 12000;
+
 router.get("/:userid/:page", async (req, res) => {
   try {
     let userId = req.headers.userid;
@@ -137,7 +143,7 @@ router.post("/send", async (req, res) => {
 
     await newMessage.save();
 
-    server.io.to(to).emit("message", message);
+    server.io.to(to).emit("message", newMessage);
 
     res.send({
       code: "SUCCESS",

@@ -45,7 +45,9 @@ export default function Friends() {
                   width="50px"
                 />
                 <div className="ms-3">
-                  <div className="fw-bold text-white">{e.name}</div>
+                  <a href={`/profile/${e.userId}`}>
+                    <div className="fw-bold text-white">{e.name}</div>
+                  </a>
                   <div className="text-muted">{e.email}</div>
                 </div>
               </div>

@@ -8,6 +8,10 @@ const UserSession = require("../model/UserSession");
 const Connections = require("../model/Connections");
 const Post = require("../model/Post");
 
+const fs = require("fs");
+
+const sharp = require("sharp");
+
 router.get("/friends", async (req, res) => {
   try {
     let userId = req.headers.userid;
@@ -62,17 +66,38 @@ router.get("/friends", async (req, res) => {
 
 router.post("/update/dp", async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     let userId = req.headers.userid;
     let dp = req.files.dp;
     let dir = path.join(__dirname, "../files");
 
     let extension = dp.name.split(".").pop();
     let newFileName = `${utils.makeToken("DP")}.${extension}`;
-    dp.mv(`${dir}/${newFileName}`);
+    let newFileName2 = `${utils.makeToken("DP")}.${extension}`;
+    await dp.mv(`${dir}/${newFileName}`);
+
+    const { height, width } = await sharp(`./files/${newFileName}`).metadata();
+
+    const size = Math.max(width, height);
+    await sharp(`./files/${newFileName}`)
+      .resize(size)
+      .extend({
+        left: Math.max(Math.floor((size - width) / 2), 0),
+        right: Math.max(Math.floor((size - width) / 2), 0),
+        top: Math.max(Math.floor((size - height) / 2), 0),
+        bottom: Math.max(Math.floor((size - height) / 2), 0),
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      })
+      .toFile(`./files/${newFileName2}`);
+
+    fs.unlink(`./files/${newFileName}`, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
 
     await UserModel.findByIdAndUpdate(userId, {
-      dp: newFileName,
+      dp: newFileName2,
     });
 
     res.send({

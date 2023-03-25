@@ -2,66 +2,102 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Header from "../components/Header";
-import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
-import Profile from "../components/Profile";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
+import { Navigate, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-import Messages from "../components/Messages";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import {
-  MDBRow,
-  MDBCol,
-  MDBContainer,
-  MDBInput,
-  MDBBtn,
-  MDBCard,
-  MDBCardBody,
-} from "mdb-react-ui-kit";
+import { MDBInput, MDBBtn, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import moment from "moment";
 import avatar from "../files/avatar.png";
+import { io } from "socket.io-client";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 function MessageDetails() {
   const [message, setMessage] = useState("");
   const isAlreadyLogged = localStorage.getItem("userId");
   const [listOfPost, setListOfPost] = useState([]);
-  const [effect, setEffect] = useState(1);
+  const [reload, setReload] = useState(1);
   const [user, setUser] = useState({});
   const [page, setPage] = useState(1);
   const imageLink = "http://localhost:8000/public/";
   const [hasMore, setHasMore] = useState(true);
+  const [hasNewer, setHasNewer] = useState(false);
+  const messagesContainerRef = useRef(null);
 
   let { userId } = useParams();
 
-  useEffect(() => {
-    async function getData() {
-      let response = await axios.get(
-        `http://localhost:8000/messages/${userId}/${page}`,
-        {
-          headers: {
-            userId: isAlreadyLogged,
-          },
-        }
-      );
-      setUser(response.data.data.user);
-      setListOfPost(listOfPost.concat(response.data.data.messages));
-      if (response.data.data.messages.length !== 10) {
-        setHasMore(false);
+  const goToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  const socket = io("http://localhost:8000");
+  socket.on("connect", () => {
+    socket.emit("setRoom", isAlreadyLogged);
+    socket.on("message", (e) => {
+      let data = [];
+      data.push(e);
+      console.log(e);
+      setListOfPost(data.concat(listOfPost));
+      goToBottom();
+    });
+  });
+
+  const getData = async () => {
+    let response = await axios.get(
+      `http://localhost:8000/messages/${userId}/${page}`,
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
       }
+    );
+    setUser(response.data.data.user);
+    setListOfPost(response.data.data.messages);
+    if (response.data.data.messages.length !== 10) {
+      setHasMore(false);
+    } else {
+      setHasMore(true);
     }
+    if (page === 1) {
+      setHasNewer(false);
+    } else {
+      setHasNewer(true);
+    }
+  };
+
+  useEffect(() => {
+    goToBottom();
+  }, [listOfPost]);
+
+  useEffect(() => {
     getData();
-  }, [page, effect]);
+  }, [page, reload]);
 
   const loadMore = () => {
     setPage(page + 1);
   };
 
+  const loadNewer = () => {
+    setPage(page - 1);
+  };
+
   const handleInputChange = (event) => {
+    event.preventDefault();
     setMessage(event.target.value);
   };
 
   const handleSubmit = async (event) => {
+    // console.log("hd");
     event.preventDefault();
     let response = await axios.post(
       `http://localhost:8000/messages/send`,
@@ -78,18 +114,18 @@ function MessageDetails() {
     setMessage("");
     setListOfPost([]);
     setPage(1);
-    setEffect(1 - effect);
+    setReload(1 - reload);
     setHasMore(true);
   };
 
   return (
-    <Container>
+    <Container sm>
       {!isAlreadyLogged && <Navigate to="/login" />}
       <Row
         className="justify-content-center align-items-center"
         style={{ minHeight: "100vh" }}
       >
-        <Col sm="10" className="level1 p-0">
+        <Col md="10" className="level1 p-0">
           <Header />
           <div
             style={{ minHeight: "100vh" }}
@@ -100,13 +136,13 @@ function MessageDetails() {
                 <Sidebar link="Messages" />
               </Col>
               <Col sm={12} lg={9}>
-                <MDBContainer className="mt-5">
-                  <MDBRow>
-                    <MDBCol md="12">
+                <Container className="mt-5">
+                  <Row>
+                    <Col xs="12">
                       <MDBCard className="border-light mb-3">
                         <MDBCardBody>
-                          <MDBRow>
-                            <MDBCol md="2">
+                          <Row>
+                            <Col xs="2">
                               <img
                                 src={
                                   !user.dp || user.dp === ""
@@ -116,33 +152,34 @@ function MessageDetails() {
                                 className="img-thumbnail"
                                 width="50px"
                               />
-                            </MDBCol>
-                            <MDBCol md="10">
+                            </Col>
+                            <Col xs="10">
                               <h4>{user.name}</h4>
-                            </MDBCol>
-                          </MDBRow>
+                            </Col>
+                          </Row>
                         </MDBCardBody>
                       </MDBCard>
-                    </MDBCol>
-                  </MDBRow>
+                    </Col>
+                  </Row>
                   {hasMore && (
-                    <MDBRow className="text-center">
-                      <MDBCol md="12">
+                    <Row className="text-center">
+                      <Col xs="12">
                         <MDBBtn outline color="warning mb-3" onClick={loadMore}>
-                          Load More
+                          Load Older
                         </MDBBtn>
-                      </MDBCol>
-                    </MDBRow>
+                      </Col>
+                    </Row>
                   )}
                   {listOfPost
                     .slice()
                     .reverse()
                     .map((message) => (
-                      <MDBRow key={message._id} className="mb-3 level2">
+                      <Row key={message._id} className="mb-3">
                         {message.from !== isAlreadyLogged ? (
-                          <MDBCol
-                            md="2"
-                            className="d-flex justify-content-center align-items-center"
+                          <Col
+                            xs="4"
+                            sm="2"
+                            className="d-flex justify-content-center align-items-end"
                           >
                             <img
                               src={
@@ -150,55 +187,74 @@ function MessageDetails() {
                                   ? avatar
                                   : imageLink + user.dp
                               }
-                              className="img-thumbnail"
+                              className="img-thumbnail mb-3"
                               width="50px"
                             />
-                          </MDBCol>
+                          </Col>
                         ) : (
-                          <MDBCol md="2"></MDBCol>
+                          <Col xs="4"></Col>
                         )}
-                        <MDBCol md="8">
-                          <MDBCard
-                            className={
-                              message.from === isAlreadyLogged
-                                ? "border-primary"
-                                : "border-secondary"
-                            }
+                        <Col xs="8">
+                          <div
+                            className={`d-flex level1 justify-content-${
+                              message.from === isAlreadyLogged ? "end" : "start"
+                            }`}
                           >
-                            <MDBCardBody className="level3">
-                              <p className="text-white">{message.message}</p>
-                              <small className="text-muted">
-                                {moment(message.createdAt).format(
-                                  "MMM DD, YYYY h:mm A"
-                                )}
-                              </small>
-                            </MDBCardBody>
-                          </MDBCard>
-                        </MDBCol>
-                        {/* {message.from === isAlreadyLogged ? (
-                          <MDBCol
-                            md="2"
-                            className="d-flex justify-content-center align-items-center"
-                          >
-                            <img
-                              src={
-                                !user.dp || user.dp === ""
-                                  ? avatar
-                                  : imageLink + user.dp
+                            <OverlayTrigger
+                              placement={`${
+                                message.from === isAlreadyLogged
+                                  ? "left"
+                                  : "right"
+                              }`}
+                              overlay={
+                                <Tooltip id="tooltip">
+                                  {" "}
+                                  {moment(message.createdAt).format(
+                                    "MMM DD, YYYY h:mm A"
+                                  )}
+                                </Tooltip>
                               }
-                              className="img-thumbnail"
-                              width="50px"
-                            />
-                          </MDBCol>
-                        ) : (
-                          <></>
-                        )} */}
-                      </MDBRow>
-                    ))}
+                            >
+                              <p
+                                style={{
+                                  maxWidth: "100%",
+                                  overflowWrap: "break-word",
+                                }}
+                                className={`text-white p-3 rounded-5 ${
+                                  message.from === isAlreadyLogged
+                                    ? "bg-warning"
+                                    : "level3"
+                                }`}
+                              >
+                                {message.message}
+                              </p>
+                            </OverlayTrigger>
 
-                  <MDBRow>
-                    <MDBCol md="12">
-                      <form onSubmit={handleSubmit}>
+                            {/* <small className="text-muted">
+                                  {moment(message.createdAt).format(
+                                    "MMM DD, YYYY h:mm A"
+                                  )}
+                                </small> */}
+                          </div>
+                        </Col>
+                      </Row>
+                    ))}
+                  {hasNewer && (
+                    <Row className="text-center">
+                      <Col xs="12">
+                        <MDBBtn
+                          outline
+                          color="warning mb-3"
+                          onClick={loadNewer}
+                        >
+                          Load Newer
+                        </MDBBtn>
+                      </Col>
+                    </Row>
+                  )}
+                  <form onSubmit={handleSubmit}>
+                    <Row className="ms-3">
+                      <Col sm={10} xs={10}>
                         <MDBInput
                           type="text"
                           value={message}
@@ -206,13 +262,15 @@ function MessageDetails() {
                           label="Type your message"
                           required
                         />
-                        <MDBBtn color="primary" type="submit">
+                      </Col>
+                      <Col sm={2} xs={2}>
+                        <MDBBtn color="warning" type="submit">
                           Send
                         </MDBBtn>
-                      </form>
-                    </MDBCol>
-                  </MDBRow>
-                </MDBContainer>
+                      </Col>
+                    </Row>
+                  </form>
+                </Container>
               </Col>
             </Row>
           </div>
