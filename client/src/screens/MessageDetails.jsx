@@ -35,7 +35,12 @@ function MessageDetails() {
   const imageLink = "http://localhost:8000/public/";
   const [hasMore, setHasMore] = useState(true);
   const [hasNewer, setHasNewer] = useState(false);
-  const messagesContainerRef = useRef(null);
+  const [file, setFile] = useState(null);
+  const inputRef = useRef(null);
+
+  const handleClick = () => {
+    inputRef.current.click();
+  };
 
   let { userId } = useParams();
 
@@ -99,30 +104,63 @@ function MessageDetails() {
 
   const handleInputChange = (event) => {
     event.preventDefault();
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setMessage(event.target.value);
+  };
+
+  const handleFileUpload = (event) => {
+    event.preventDefault();
+    // console.log(event.target.files[0]);
+    setFile(event.target.files[0]);
   };
 
   const handleSubmit = async (event) => {
     // console.log("hd");
     event.preventDefault();
-    let response = await axios.post(
-      `http://localhost:8000/messages/send`,
-      {
-        to: user.id,
-        message: message,
-      },
-      {
-        headers: {
-          userId: isAlreadyLogged,
+    if (message) {
+      let response = await axios.post(
+        `http://localhost:8000/messages/send`,
+        {
+          to: user.id,
+          message: message,
+          type: "message",
         },
-      }
-    );
-    setMessage("");
-    setListOfPost([]);
-    setPage(1);
-    setReload(1 - reload);
-    setHasMore(true);
+        {
+          headers: {
+            userId: isAlreadyLogged,
+          },
+        }
+      );
+      setMessage("");
+      setListOfPost([]);
+      setPage(1);
+      setReload(1 - reload);
+      setHasMore(true);
+    }
+
+    if (file) {
+      // console.log("ddd");
+      let body = new FormData();
+      body.append("message", file);
+      body.append("to", user.id);
+      body.append("type", "file");
+      let response = await axios.post(
+        `http://localhost:8000/messages/send`,
+        body,
+        {
+          headers: {
+            userId: isAlreadyLogged,
+          },
+        }
+      );
+      console.log(response.data);
+      setFile(null);
+      inputRef.current.value = "";
+      setListOfPost([]);
+      setPage(1);
+      setReload(1 - reload);
+      setHasMore(true);
+    }
   };
 
   return (
@@ -234,6 +272,22 @@ function MessageDetails() {
                                 }`}
                               >
                                 {message.type === "message" && message.message}
+                                {message.type === "image" && (
+                                  <img
+                                    src={imageLink + message.message}
+                                    className="w-100"
+                                  />
+                                )}
+
+                                {message.type === "file" && (
+                                  <a
+                                    className="text-white"
+                                    href={imageLink + message.message}
+                                  >
+                                    <i class="fa-solid fa-file-arrow-down"></i>{" "}
+                                    {message.originalFileName}
+                                  </a>
+                                )}
                               </p>
                             </OverlayTrigger>
 
@@ -280,9 +334,36 @@ function MessageDetails() {
                         />
                       </Col>
                     </Form.Group> */}
+                    <input
+                      type="file"
+                      ref={inputRef}
+                      style={{ display: "none" }}
+                      onChange={handleFileUpload}
+                    />
+
+                    {file && (
+                      <div className="d-flex align-items-center">
+                        <p className="ms-3 p-3 border border-dark">
+                          {file.name}
+                        </p>
+                        <div
+                          onClick={() => {
+                            setFile(null);
+                            inputRef.current.value = "";
+                          }}
+                          className="border border-start-0 border-dark p-3 mb-3"
+                        >
+                          <i class="fa-regular fa-circle-xmark fa-xl"></i>
+                        </div>
+                      </div>
+                    )}
 
                     <InputGroup className="mb-3">
-                      <Button variant="outline-warning" className="me-2">
+                      <Button
+                        onClick={handleClick}
+                        variant="outline-warning"
+                        className="me-2"
+                      >
                         <i class="fa-solid fa-paperclip"></i>
                       </Button>
                       <Form.Control
@@ -290,7 +371,6 @@ function MessageDetails() {
                         className="me-2"
                         value={message}
                         onChange={handleInputChange}
-                        required
                       />
                       <Button variant="warning" type="submit">
                         Send

@@ -35,27 +35,28 @@ export default function Sidebar({ link }) {
     },
   ];
   return (
-    <MDBListGroup
-      horizontal={isSmall}
-      light
-      className={`${isSmall ? "mb-3 border-bottom" : ""}`}
-    >
-      {list.map((e, index) => (
-        <MDBListGroupItem
-          key={index}
-          tag="a"
-          href={e.link}
-          action
-          noBorders
-          className={`px-3 level1 ${e.title === link ? "text-warning" : ""} ${
-            isSmall ? "text-center" : ""
-          }`}
-        >
-          <i class={e.icon}> </i> {!isSmall ? e.title : ""}
-        </MDBListGroupItem>
-      ))}
+    <div className="border-end h-100 border-opacity-25 border-warning-subtle">
+      <MDBListGroup
+        horizontal={isSmall}
+        light
+        className={`${isSmall ? "mb-3 border-bottom" : ""}`}
+      >
+        {list.map((e, index) => (
+          <MDBListGroupItem
+            key={index}
+            tag="a"
+            href={e.link}
+            action
+            noBorders
+            className={`px-3 level1 ${e.title === link ? "text-warning" : ""} ${
+              isSmall ? "text-center" : ""
+            }`}
+          >
+            <i class={e.icon}> </i> {!isSmall ? e.title : ""}
+          </MDBListGroupItem>
+        ))}
 
-      {/* 
+        {/* 
         <MDBListGroupItem
           tag="a"
           href="#"
@@ -66,6 +67,7 @@ export default function Sidebar({ link }) {
           Porta ac consectetur ac
         </MDBListGroupItem>
        */}
-    </MDBListGroup>
+      </MDBListGroup>
+    </div>
   );
 }

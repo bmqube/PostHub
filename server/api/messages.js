@@ -2,6 +2,7 @@ const express = require("express"); // module
 const router = express.Router(); // module
 const bcrypt = require("bcrypt");
 const salt = 10;
+const utils = require("../helpers/utils");
 
 const UserModel = require("../model/User");
 const UserSession = require("../model/UserSession");
@@ -11,16 +12,14 @@ const PostReact = require("../model/PostReact");
 
 const server = require("../server.js");
 const Message = require("../model/Message");
+const path = require("path");
 
 router.get("/", async (req, res) => {
   try {
     let userId = req.headers.userid;
 
     let listOfMessages = await Message.aggregate([
-      // Match messages sent or received by the specified user
       { $match: { $or: [{ from: userId }, { to: userId }] } },
-
-      // Group messages by sender and receiver
       {
         $group: {
           _id: {
@@ -34,13 +33,10 @@ router.get("/", async (req, res) => {
         },
       },
 
-      // Sort by the timestamp of the last message for each user
       { $sort: { "lastMessage.createdAt": -1 } },
 
-      // Limit to the last 10 unique people
       { $limit: 10 },
 
-      // Project the desired fields for each result
       {
         $project: {
           _id: 0,
@@ -93,12 +89,12 @@ router.get("/:userid/:page", async (req, res) => {
           { from: userId, to: anotherUser },
           { from: anotherUser, to: userId },
         ],
-      }, // filter for messages between the two users
-      null, // retrieve all fields
+      },
+      null,
       {
-        sort: { createdAt: -1 }, // sort by createdAt in descending order
-        skip: (page - 1) * limit, // skip to the appropriate page
-        limit: limit, // retrieve the specified number of messages per page
+        sort: { createdAt: -1 },
+        skip: (page - 1) * limit,
+        limit: limit,
       }
     );
 
@@ -141,13 +137,48 @@ router.post("/send", async (req, res) => {
     let userId = req.headers.userid;
     let message = req.body.message;
     let to = req.body.to;
+    let type = req.body.type;
+    let originalFileName = "";
+
+    if (type !== "message") {
+      let temp = req.files.message;
+      // console.log(temp);
+      let dir = path.join(__dirname, "../files");
+
+      originalFileName = temp.name;
+      let extension = originalFileName.split(".").pop().toLowerCase();
+
+      console.log(extension);
+
+      if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
+        type = "image";
+      } else if (["mp4", "avi", "mkv", "mov"].includes(extension)) {
+        type = "video";
+      } else if (["mp3", "wav", "m4a"].includes(extension)) {
+        type = "audio";
+      } else if (
+        ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(extension)
+      ) {
+        type = "file";
+      } else {
+        res.send({
+          code: "FAIL",
+          message: "Invalid File Extension",
+        });
+        return;
+      }
+
+      message = `${utils.makeToken("Message")}.${extension}`;
+      temp.mv(`${dir}/${message}`);
+    }
 
     let newMessage = new Message({
       from: userId,
       to: to,
       message: message,
       status: "sent",
-      type: "message",
+      type: type,
+      originalFileName: originalFileName,
     });
 
     await newMessage.save();

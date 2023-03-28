@@ -13,7 +13,11 @@ const Message = new Schema({
   },
   type: {
     type: String,
-    enum: ["message", "file", "image", "video"],
+    enum: ["message", "file", "image", "video", "audio"],
+  },
+  originalFileName: {
+    type: String,
+    default: "",
   },
   status: {
     type: String,
