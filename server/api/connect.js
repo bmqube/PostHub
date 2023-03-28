@@ -56,6 +56,54 @@ router.post("/send/:userId", async (req, res) => {
   }
 });
 
+router.post("/cancel/:userId", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let receiver = req.params.userId;
+
+    await Connections.deleteMany({
+      from: userId,
+      to: receiver,
+    });
+
+    res.send({
+      code: "SUCCESS",
+      message: "Request successfully sent",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.post("/unfriend/:userId", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let receiver = req.params.userId;
+
+    await Connections.deleteMany({
+      $or: [
+        { from: userId, to: receiver },
+        { from: receiver, to: userId },
+      ],
+    });
+
+    res.send({
+      code: "SUCCESS",
+      message: "Request successfully sent",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
 router.get("/suggestions", async (req, res) => {
   try {
     let userId = req.headers.userid;

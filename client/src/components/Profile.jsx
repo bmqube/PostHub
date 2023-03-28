@@ -24,6 +24,7 @@ export default function Profile({ effect, setEffect }) {
   const isAlreadyLogged = localStorage.getItem("userId");
   const [basicModal, setBasicModal] = useState(false);
   const [dp, setDp] = useState(null);
+  const [unfriendModal, setUnfriendModal] = useState(false);
 
   let { userId } = useParams();
 
@@ -57,11 +58,63 @@ export default function Profile({ effect, setEffect }) {
 
   // console.log(userId);
 
-  const sendFriendReq = async (receiver) => {
-    // e.preventDefault();
+  const sendFriendReq = async (e) => {
+    e.preventDefault();
     let response = await axios.post(
-      "http://localhost:8000/connect/send/" + receiver,
+      "http://localhost:8000/connect/send/" + userId,
       {},
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      }
+    );
+
+    console.log(response);
+
+    setEffect(!effect);
+  };
+
+  const cancelFriendReq = async (e) => {
+    e.preventDefault();
+    let response = await axios.post(
+      "http://localhost:8000/connect/cancel/" + userId,
+      {},
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      }
+    );
+
+    console.log(response);
+
+    setEffect(!effect);
+  };
+
+  const unfriendUser = async (e) => {
+    e.preventDefault();
+    let response = await axios.post(
+      "http://localhost:8000/connect/unfriend/" + userId,
+      {},
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      }
+    );
+
+    console.log(response);
+
+    setUnfriendModal(!unfriendModal);
+
+    setEffect(!effect);
+  };
+
+  const acceptFriendReq = async (e) => {
+    e.preventDefault();
+    let response = await axios.get(
+      "http://localhost:8000/connect/accept/" + userId,
       {
         headers: {
           userId: isAlreadyLogged,
@@ -76,7 +129,14 @@ export default function Profile({ effect, setEffect }) {
 
   useEffect(() => {
     async function getData() {
-      let response = await axios.get("http://localhost:8000/post/feed/mine", {
+      let link = "http://localhost:8000/post/feed/";
+      if (userId) {
+        link = link + userId;
+      } else {
+        link = link + "mine";
+      }
+
+      let response = await axios.get(link, {
         headers: {
           userId: isAlreadyLogged,
         },
@@ -84,7 +144,7 @@ export default function Profile({ effect, setEffect }) {
       // console.log(response.data);
       setListOfPost(response.data.data);
 
-      let link = "http://localhost:8000/profile/";
+      link = "http://localhost:8000/profile/";
 
       if (userId) {
         link = link + userId;
@@ -99,7 +159,7 @@ export default function Profile({ effect, setEffect }) {
       });
       // console.log(response.data);
       if (response.data.code === "SUCCESS") {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setProfileDetails(response.data.data);
       }
     }
@@ -109,7 +169,7 @@ export default function Profile({ effect, setEffect }) {
   return (
     <>
       <div className="text-center">
-        <MDBCol onClick={toggleShow} className="mb-4">
+        <MDBCol className="mb-4">
           {profileDetails.dp === undefined || profileDetails.dp === "" ? (
             <img
               src={avatar}
@@ -134,23 +194,78 @@ export default function Profile({ effect, setEffect }) {
       <div className="row justify-content-center mb-3">
         <div className="col-md-4 col-6">
           <div className="d-grid">
-            <Button
-              onClick={sendFriendReq}
-              variant="outline-secondary text-white"
-            >
-              Add Friend
-            </Button>
+            {userId &&
+              (!profileDetails.status ||
+                profileDetails.status === "rejected") && (
+                <Button
+                  onClick={sendFriendReq}
+                  variant="outline-secondary text-white"
+                >
+                  <i class="fa-solid fa-user-plus"></i> Add Friend
+                </Button>
+              )}
+
+            {userId &&
+              profileDetails.status &&
+              profileDetails.status === "accepted" && (
+                <Button
+                  onClick={() => {
+                    setUnfriendModal(!unfriendModal);
+                  }}
+                  variant="outline-secondary text-white"
+                >
+                  <i class="fa-solid fa-user-check"></i> Friends
+                </Button>
+              )}
+
+            {userId &&
+              profileDetails.status &&
+              profileDetails.status === "pending" && (
+                <Button
+                  onClick={cancelFriendReq}
+                  variant="outline-secondary text-white"
+                >
+                  <i class="fa-solid fa-user-xmark"></i> Cancel
+                </Button>
+              )}
+
+            {userId &&
+              profileDetails.status &&
+              profileDetails.status === "confirm" && (
+                <Button
+                  onClick={acceptFriendReq}
+                  variant="outline-secondary text-white"
+                >
+                  <i class="fa-solid fa-user-xmark"></i> Confirm
+                </Button>
+              )}
+
+            {!userId && (
+              <Button
+                onClick={sendFriendReq}
+                variant="outline-secondary text-white"
+              >
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </Button>
+            )}
           </div>
         </div>
         <div className="col-md-4 col-6">
           <div className="d-grid">
-            <Button href={`/message/${userId}`} variant="outline-warning">
-              Message
-            </Button>
+            {userId && (
+              <Button href={`/message/${userId}`} variant="outline-warning">
+                <i class="fa-regular fa-message"></i> Message
+              </Button>
+            )}
+            {!userId && (
+              <Button onClick={toggleShow} variant="outline-warning">
+                <i class="fa-solid fa-image"></i> Update DP
+              </Button>
+            )}
           </div>
         </div>
       </div>
-      <CreatePost effect={effect} setEffect={setEffect} />
+      {!userId && <CreatePost effect={effect} setEffect={setEffect} />}
       <div className="text-white mb-3">
         {listOfPost.length === 0 ? (
           <p className="text-white text-center">
@@ -158,7 +273,12 @@ export default function Profile({ effect, setEffect }) {
           </p>
         ) : (
           listOfPost.map((e, index) => (
-            <SinglePost key={index} post={e} user="Self" />
+            <SinglePost
+              key={index}
+              post={e}
+              effect={effect}
+              setEffect={setEffect}
+            />
           ))
         )}
       </div>
@@ -190,6 +310,41 @@ export default function Profile({ effect, setEffect }) {
               </MDBBtn>
               <MDBBtn color="warning" onClick={handleDPUpload}>
                 Update
+              </MDBBtn>
+            </MDBModalFooter>
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
+
+      <MDBModal show={unfriendModal} setShow={setUnfriendModal} tabIndex="1">
+        <MDBModalDialog>
+          <MDBModalContent>
+            <MDBModalHeader>
+              <MDBModalTitle>Unfriend</MDBModalTitle>
+              <MDBBtn
+                className="btn-close"
+                color="none"
+                onClick={() => {
+                  setUnfriendModal(!unfriendModal);
+                }}
+              ></MDBBtn>
+            </MDBModalHeader>
+            <MDBModalBody>
+              Are you sure you want to unfriend{" "}
+              <strong>{profileDetails.name}</strong>?
+            </MDBModalBody>
+
+            <MDBModalFooter>
+              <MDBBtn
+                color="success"
+                onClick={() => {
+                  setUnfriendModal(!unfriendModal);
+                }}
+              >
+                Close
+              </MDBBtn>
+              <MDBBtn color="danger" onClick={unfriendUser}>
+                Unfriend
               </MDBBtn>
             </MDBModalFooter>
           </MDBModalContent>

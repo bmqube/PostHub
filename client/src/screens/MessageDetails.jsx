@@ -17,7 +17,13 @@ import { MDBInput, MDBBtn, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import moment from "moment";
 import avatar from "../files/avatar.png";
 import { io } from "socket.io-client";
-import { Tooltip, OverlayTrigger } from "react-bootstrap";
+import {
+  Tooltip,
+  OverlayTrigger,
+  Button,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
 
 function MessageDetails() {
   const [message, setMessage] = useState("");
@@ -93,6 +99,7 @@ function MessageDetails() {
 
   const handleInputChange = (event) => {
     event.preventDefault();
+    console.log(event.target.value);
     setMessage(event.target.value);
   };
 
@@ -103,7 +110,7 @@ function MessageDetails() {
       `http://localhost:8000/messages/send`,
       {
         to: user.id,
-        message,
+        message: message,
       },
       {
         headers: {
@@ -226,7 +233,7 @@ function MessageDetails() {
                                     : "level3"
                                 }`}
                               >
-                                {message.message}
+                                {message.type === "message" && message.message}
                               </p>
                             </OverlayTrigger>
 
@@ -253,8 +260,50 @@ function MessageDetails() {
                     </Row>
                   )}
                   <form onSubmit={handleSubmit}>
-                    <Row className="ms-3">
-                      <Col sm={10} xs={10}>
+                    {/* <Form.Group
+                      as={Row}
+                      className="mb-3"
+                      controlId="formPlaintextEmail"
+                    >
+                      <Form.Label column xs="2">
+                        <Button>
+                          <i class="fa-solid fa-paperclip"></i>
+                        </Button>
+                      </Form.Label>
+                      <Col xs="10">
+                        <Form.Control
+                          type="text"
+                          defaultValue="email@example.com"
+                          value={message}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </Col>
+                    </Form.Group> */}
+
+                    <InputGroup className="mb-3">
+                      <Button variant="outline-warning" className="me-2">
+                        <i class="fa-solid fa-paperclip"></i>
+                      </Button>
+                      <Form.Control
+                        type="text"
+                        className="me-2"
+                        value={message}
+                        onChange={handleInputChange}
+                        required
+                      />
+                      <Button variant="warning" type="submit">
+                        Send
+                      </Button>
+                    </InputGroup>
+
+                    {/* <Row>
+                      <Col sm={2} xs={2}>
+                        <MDBBtn outline color="warning" type="submit">
+                          <i class="fa-solid fa-paperclip"></i>
+                        </MDBBtn>
+                      </Col>
+                      <Col sm={8} xs={8}>
                         <MDBInput
                           type="text"
                           value={message}
@@ -268,7 +317,7 @@ function MessageDetails() {
                           Send
                         </MDBBtn>
                       </Col>
-                    </Row>
+                    </Row> */}
                   </form>
                 </Container>
               </Col>

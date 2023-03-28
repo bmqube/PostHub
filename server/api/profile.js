@@ -126,6 +126,26 @@ router.get("/:id", async (req, res) => {
       password: 0,
     });
 
+    profile = profile.toJSON();
+
+    if (profile && profileId !== userId) {
+      let connection = await Connections.findOne({
+        $or: [
+          { from: userId, to: profileId },
+          { from: profileId, to: userId },
+        ],
+      });
+
+      if (connection) {
+        // console.log(connection);
+        profile.status = connection.status;
+
+        if (connection.status === "pending" && connection.to === userId) {
+          profile.status = "confirm";
+        }
+      }
+    }
+
     res.send({
       code: "SUCCESS",
       data: profile,

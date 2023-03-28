@@ -46,11 +46,13 @@ router.get("/", async (req, res) => {
           _id: 0,
           user: "$_id",
           message: "$lastMessage.message",
-          status: "$lastMessage.status",
+          // status: "$lastMessage.status",
           createdAt: "$lastMessage.createdAt",
         },
       },
     ]);
+
+    // console.log(listOfMessages);
 
     for (let i = 0; i < listOfMessages.length; i++) {
       let message = listOfMessages[i];
@@ -72,12 +74,6 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
-function meow(params) {
-  return 12000;
-}
-
-const meow = (params) => 12000;
 
 router.get("/:userid/:page", async (req, res) => {
   try {
@@ -105,6 +101,17 @@ router.get("/:userid/:page", async (req, res) => {
         limit: limit, // retrieve the specified number of messages per page
       }
     );
+
+    // await Message.updateMany(
+    //   {
+    //     $or: [
+    //       { from: userId, to: anotherUser },
+    //       { from: anotherUser, to: userId },
+    //     ],
+    //     status: "sent",
+    //   }, // filter for messages between the two users
+    //   { $set: { status: "seen" } }
+    // );
 
     let data = {
       user: {
@@ -139,6 +146,8 @@ router.post("/send", async (req, res) => {
       from: userId,
       to: to,
       message: message,
+      status: "sent",
+      type: "message",
     });
 
     await newMessage.save();

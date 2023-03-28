@@ -141,17 +141,24 @@ router.get("/feed", async (req, res) => {
   }
 });
 
-router.get("/feed/mine", async (req, res) => {
+router.get("/feed/:id", async (req, res) => {
   try {
     let userId = req.headers.userid;
+    let id = req.params.id;
+    if (id === "mine") {
+      id = userId;
+    }
     let result = await Post.find({
-      creator: userId,
+      creator: id,
     });
 
     let data = [];
+    let profile = await UserModel.findById(id, {
+      password: 0,
+    });
 
     for (let i = 0; i < result.length; i++) {
-      const post = result[i];
+      const post = result[i].toJSON();
       let res = await PostReact.find({
         postId: post._id,
         userId: userId,
@@ -159,12 +166,13 @@ router.get("/feed/mine", async (req, res) => {
       });
 
       post.reacted = res.length > 0;
+      post.createdBy = profile.name;
       data.push(post);
     }
 
     res.send({
       code: "SUCCESS",
-      data: result,
+      data: data,
     });
   } catch (error) {
     console.log(error);

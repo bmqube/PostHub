@@ -11,6 +11,10 @@ const Message = new Schema({
   message: {
     type: String,
   },
+  type: {
+    type: String,
+    enum: ["message", "file", "image", "video"],
+  },
   status: {
     type: String,
     enum: ["sent", "seen"],
