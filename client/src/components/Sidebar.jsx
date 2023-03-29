@@ -35,7 +35,7 @@ export default function Sidebar({ link }) {
     },
   ];
   return (
-    <div className="border-end h-100 border-opacity-25 border-warning-subtle">
+    <div className="h-100 border-end border-dark">
       <MDBListGroup
         horizontal={isSmall}
         light

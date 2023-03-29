@@ -15,7 +15,7 @@ const Message = new Schema({
     type: String,
     enum: ["message", "file", "image", "video", "audio"],
   },
-  originalFileName: {
+  savedFileName: {
     type: String,
     default: "",
   },

@@ -244,6 +244,7 @@ router.get("/friends", async (req, res) => {
       data.push({
         userId: userProfile._id,
         name: userProfile.name,
+        email: userProfile.email,
         dp: userProfile.dp,
       });
     }

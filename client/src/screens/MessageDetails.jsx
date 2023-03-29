@@ -37,6 +37,7 @@ function MessageDetails() {
   const [hasNewer, setHasNewer] = useState(false);
   const [file, setFile] = useState(null);
   const inputRef = useRef(null);
+  const [bottom, setBottom] = useState(false);
 
   const handleClick = () => {
     inputRef.current.click();
@@ -226,15 +227,17 @@ function MessageDetails() {
                             sm="2"
                             className="d-flex justify-content-center align-items-end"
                           >
-                            <img
-                              src={
-                                !user.dp || user.dp === ""
-                                  ? avatar
-                                  : imageLink + user.dp
-                              }
-                              className="img-thumbnail mb-3"
-                              width="50px"
-                            />
+                            <a href={`/profile/${user.id}`}>
+                              <img
+                                src={
+                                  !user.dp || user.dp === ""
+                                    ? avatar
+                                    : imageLink + user.dp
+                                }
+                                className="img-thumbnail mb-3"
+                                width="50px"
+                              />
+                            </a>
                           </Col>
                         ) : (
                           <Col xs="4"></Col>
@@ -274,7 +277,8 @@ function MessageDetails() {
                                 {message.type === "message" && message.message}
                                 {message.type === "image" && (
                                   <img
-                                    src={imageLink + message.message}
+                                    src={imageLink + message.savedFileName}
+                                    alt={message.message}
                                     className="w-100"
                                   />
                                 )}
@@ -282,10 +286,10 @@ function MessageDetails() {
                                 {message.type === "file" && (
                                   <a
                                     className="text-white"
-                                    href={imageLink + message.message}
+                                    href={imageLink + message.savedFileName}
                                   >
                                     <i class="fa-solid fa-file-arrow-down"></i>{" "}
-                                    {message.originalFileName}
+                                    {message.message}
                                   </a>
                                 )}
                               </p>
@@ -299,6 +303,7 @@ function MessageDetails() {
                           </div>
                         </Col>
                       </Row>
+                      // setBottom(!bottom)
                     ))}
                   {hasNewer && (
                     <Row className="text-center">

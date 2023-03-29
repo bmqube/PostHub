@@ -138,17 +138,17 @@ router.post("/send", async (req, res) => {
     let message = req.body.message;
     let to = req.body.to;
     let type = req.body.type;
-    let originalFileName = "";
+    let savedFileName = "";
 
     if (type !== "message") {
       let temp = req.files.message;
       // console.log(temp);
       let dir = path.join(__dirname, "../files");
 
-      originalFileName = temp.name;
-      let extension = originalFileName.split(".").pop().toLowerCase();
+      message = temp.name;
+      let extension = message.split(".").pop().toLowerCase();
 
-      console.log(extension);
+      // console.log(extension);
 
       if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
         type = "image";
@@ -168,8 +168,8 @@ router.post("/send", async (req, res) => {
         return;
       }
 
-      message = `${utils.makeToken("Message")}.${extension}`;
-      temp.mv(`${dir}/${message}`);
+      savedFileName = `${utils.makeToken("Message")}.${extension}`;
+      temp.mv(`${dir}/${savedFileName}`);
     }
 
     let newMessage = new Message({
@@ -178,7 +178,7 @@ router.post("/send", async (req, res) => {
       message: message,
       status: "sent",
       type: type,
-      originalFileName: originalFileName,
+      savedFileName: savedFileName,
     });
 
     await newMessage.save();

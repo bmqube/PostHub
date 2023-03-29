@@ -33,7 +33,12 @@ router.get("/friends", async (req, res) => {
 
       const fren = await UserModel.findById(curr_id.to);
 
-      data.push({ userId: fren._id, name: fren.name, dp: fren.dp });
+      data.push({
+        userId: fren._id,
+        email: fren.email,
+        name: fren.name,
+        dp: fren.dp,
+      });
     }
 
     for (let i = 0; i < friends2.length; i++) {
