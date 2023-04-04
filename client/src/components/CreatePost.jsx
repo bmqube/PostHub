@@ -49,16 +49,6 @@ export default function CreatePost({ effect, setEffect }) {
         value={message}
         className="level3 text-white"
       />
-      {/* <MDBTextArea
-        className="level3 text-white"
-        label="What's on your mind?"
-        onChange={(e) => {
-          setMessage(e.target.value);
-        }}
-        value={message}
-        id="textAreaExample"
-        rows={3}
-      /> */}
       <MDBBtn color="warning" outline onClick={createPost} id="button-addon2">
         Post
       </MDBBtn>

@@ -8,6 +8,51 @@ export default function SinglePost({ post, user, effect, setEffect }) {
 
   // console.log(post);
 
+  function formatTime(postDate) {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let now = new Date();
+    postDate = new Date(postDate);
+    const diff = Math.abs(now - postDate);
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+    const week = 7 * day;
+    const month = 30 * day;
+    const year = 365 * day;
+
+    if (diff < minute) {
+      return "Just now";
+    } else if (diff < hour) {
+      return Math.floor(diff / minute) + "m";
+    } else if (diff < day) {
+      return Math.floor(diff / hour) + "h";
+    } else if (diff < week) {
+      return Math.floor(diff / day) + "d";
+    } else if (diff < month) {
+      return Math.floor(diff / week) + "w";
+    } else {
+      const hour = (postDate.getHours() % 12).toString().padStart(2, "0");
+      const minute = postDate.getMinutes().toString().padStart(2, "0");
+      const ampm = postDate.getHours() >= 12 ? "PM" : "AM";
+      return `${
+        monthNames[postDate.getMonth()]
+      } ${postDate.getDate()} at ${hour}:${minute} ${ampm}`;
+    }
+  }
+
   const reactPost = async (e) => {
     e.preventDefault();
     let response = await axios.post(
@@ -40,8 +85,7 @@ export default function SinglePost({ post, user, effect, setEffect }) {
         </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           <small>
-            {new Date(Date.parse(post.createdAt)).toLocaleString().split(",")}
-            {/* {` (${post.privacy})`} */}
+            {formatTime(Date.parse(post.createdAt))}{" "}
             <i
               class={`fa-solid ${
                 post.privacy === "public" ? "fa-earth-asia" : "fa-user-group"
@@ -62,7 +106,10 @@ export default function SinglePost({ post, user, effect, setEffect }) {
           ></i>{" "}
           {post.reacted ? "Liked" : "Like"}
         </Card.Link>
-        <Card.Link href="#" className="text-decoration-none text-white">
+        <Card.Link
+          href={`/post/${post._id}`}
+          className="text-decoration-none text-white"
+        >
           <i class="fa-regular fa-comment"></i> Comment
         </Card.Link>
       </Card.Body>

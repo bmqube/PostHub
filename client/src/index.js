@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Login from "./screens/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -15,6 +14,7 @@ import ProfilePage from "./screens/ProfilePage";
 import MessagePage from "./screens/MessagePage";
 import NotificationPage from "./screens/NotificationPage";
 import MessageDetails from "./screens/MessageDetails";
+import PostDetails from "./screens/PostDetails";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +29,7 @@ root.render(
       <Route path="/messages" element={<MessagePage />} />
       <Route path="/notifications" element={<NotificationPage />} />
       <Route path="/message/:userId" element={<MessageDetails />} />
+      <Route path="/post/:postId" element={<PostDetails />} />
     </Routes>
   </BrowserRouter>
 );

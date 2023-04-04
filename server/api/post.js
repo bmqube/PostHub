@@ -10,6 +10,7 @@ const Post = require("../model/Post");
 const PostReact = require("../model/PostReact");
 
 const server = require("../server.js");
+const PostComment = require("../model/PostComment");
 
 router.post("/create", async (req, res) => {
   try {
@@ -173,6 +174,70 @@ router.get("/feed/:id", async (req, res) => {
     res.send({
       code: "SUCCESS",
       data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.post("/comment", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let comment = req.body.comment;
+    let postId = req.body.postId;
+
+    let newComment = new PostComment({
+      creator: userId,
+      message: comment,
+      postId: postId,
+    });
+
+    await newComment.save();
+
+    res.send({
+      code: "SUCCESS",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.get("/details/:postId", async (req, res) => {
+  try {
+    let postId = req.params.postId;
+
+    let post = await Post.findById(postId);
+    let postCreator = await UserModel.findById(post.creator);
+    post = post.toJSON();
+    post.createdBy = postCreator.name;
+    let comments_temp = await PostComment.find({
+      postId: postId,
+    });
+    let comments = [];
+
+    for (let i = 0; i < comments_temp.length; i++) {
+      const curr_comment = comments_temp[i].toJSON();
+      let user = await UserModel.findById(curr_comment.creator);
+      curr_comment.creatorName = user.name;
+      curr_comment.dp = user.dp;
+
+      comments.push(curr_comment);
+    }
+
+    res.send({
+      code: "SUCCESS",
+      data: {
+        post: post,
+        comments: comments,
+      },
     });
   } catch (error) {
     console.log(error);
