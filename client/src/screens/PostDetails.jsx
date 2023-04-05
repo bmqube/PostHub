@@ -142,50 +142,51 @@ function PostDetails() {
                 <Container>
                   <SinglePost post={post} />
                   {listOfComment.map((comment) => (
-                    <Row key={comment._id} className="mb-3">
-                      <Col
-                        xs="4"
-                        sm="2"
-                        className="d-flex justify-content-center align-items-end"
-                      >
+                    <div
+                      key={comment._id}
+                      className="d-flex level2 mb-2 rounded-3"
+                    >
+                      {/* <Row key={comment._id} className="mb-3"> */}
+                      <div style={{ maxWidth: "4rem" }} className="me-3">
+                        <img
+                          src={
+                            !comment.dp || comment.dp === ""
+                              ? avatar
+                              : imageLink + comment.dp
+                          }
+                          className="img-thumbnail m-3 rounded-circle"
+                        />
+                      </div>
+                      <div className="ms-3 mt-3">
                         <a href={`/profile/${comment.creator}`}>
-                          <img
-                            src={
-                              !comment.dp || comment.dp === ""
-                                ? avatar
-                                : imageLink + comment.dp
-                            }
-                            className="img-thumbnail mb-3"
-                            width="50px"
-                          />
+                          {comment.creatorName}
                         </a>
-                      </Col>
-                      <Col xs="8">
-                        <div className={`d-flex level1 justify-content-start`}>
-                          <OverlayTrigger
-                            placement="right"
-                            overlay={
-                              <Tooltip id="tooltip">
-                                {" "}
-                                {moment(comment.createdAt).format(
-                                  "MMM DD, YYYY h:mm A"
-                                )}
-                              </Tooltip>
-                            }
+                        {/* <div className={`d-flex justify-content-start`}> */}
+                        <OverlayTrigger
+                          placement="right"
+                          overlay={
+                            <Tooltip id="tooltip">
+                              {" "}
+                              {moment(comment.createdAt).format(
+                                "MMM DD, YYYY h:mm A"
+                              )}
+                            </Tooltip>
+                          }
+                        >
+                          <p
+                            className={`text-white mb-0`}
+                            style={{
+                              maxWidth: "100%",
+                              overflowWrap: "break-word",
+                            }}
                           >
-                            <p
-                              style={{
-                                maxWidth: "100%",
-                                overflowWrap: "break-word",
-                              }}
-                              className={`text-white p-3 rounded-5 level3`}
-                            >
-                              {comment.message}
-                            </p>
-                          </OverlayTrigger>
-                        </div>
-                      </Col>
-                    </Row>
+                            {comment.message}
+                          </p>
+                        </OverlayTrigger>
+                        {/* </div> */}
+                      </div>
+                      {/* </Row> */}
+                    </div>
                     // setBottom(!bottom)
                   ))}
                   {/* {hasNewer && (
