@@ -11,6 +11,7 @@ const PostReact = require("../model/PostReact");
 
 const server = require("../server.js");
 const PostComment = require("../model/PostComment");
+const Notification = require("../model/Notification");
 
 router.post("/create", async (req, res) => {
   try {
@@ -52,7 +53,18 @@ router.post("/react", async (req, res) => {
     });
 
     let post = await Post.findById(postId);
-    server.io.to(post.creator).emit("message", "reaction");
+
+    if (post.creator !== userId) {
+      let notification = new Notification({
+        user: post.creator,
+        causedBy: userId,
+        post: postId,
+        notifyFor: "reaction",
+      });
+
+      await notification.save();
+      server.io.to(post.creator).emit("notification", "reaction");
+    }
 
     if (result) {
       result.existence = 1 - result.existence;
@@ -197,6 +209,20 @@ router.post("/comment", async (req, res) => {
     });
 
     await newComment.save();
+
+    let post = await Post.findById(postId);
+
+    if (post.creator !== userId) {
+      let notification = new Notification({
+        user: post.creator,
+        causedBy: userId,
+        post: postId,
+        notifyFor: "comment",
+      });
+
+      await notification.save();
+      server.io.to(post.creator).emit("notification", "reaction");
+    }
 
     res.send({
       code: "SUCCESS",

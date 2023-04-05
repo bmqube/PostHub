@@ -93,7 +93,7 @@ export default function SinglePost({ post, user, effect, setEffect }) {
             ></i>
           </small>
         </Card.Subtitle>
-        <Card.Text>{post.message}</Card.Text>
+        <Card.Text className="text-white">{post.message}</Card.Text>
         <Card.Link
           onClick={reactPost}
           href="#"

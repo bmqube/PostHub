@@ -29,6 +29,7 @@ app.use("/connect", require("./api/connect"));
 app.use("/post", require("./api/post"));
 app.use("/profile", require("./api/profile"));
 app.use("/messages", require("./api/messages"));
+app.use("/notification", require("./api/notification"));
 
 // app.get("/", async (req, res) => {
 

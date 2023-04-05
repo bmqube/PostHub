@@ -8,6 +8,10 @@ const Notification = new Schema({
   causedBy: {
     type: String,
   },
+  notifyFor: {
+    type: String,
+    enum: ["comment", "reaction"],
+  },
   post: {
     type: String,
   },
