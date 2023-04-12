@@ -113,6 +113,7 @@ router.get("/:userid/:page", async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        email: user.email,
         dp: user.dp,
       },
       messages: listOfMessages,

@@ -24,6 +24,8 @@ import {
   Form,
   InputGroup,
 } from "react-bootstrap";
+import { AES } from "crypto-js";
+const CryptoJS = require("crypto-js");
 
 function MessageDetails() {
   const [message, setMessage] = useState("");
@@ -119,11 +121,12 @@ function MessageDetails() {
     // console.log("hd");
     event.preventDefault();
     if (message) {
+      let encryptedText = AES.encrypt(message, isAlreadyLogged).toString();
       let response = await axios.post(
         `http://localhost:8000/messages/send`,
         {
           to: user.id,
-          message: message,
+          message: encryptedText,
           type: "message",
         },
         {
@@ -184,28 +187,31 @@ function MessageDetails() {
               <Col sm={12} lg={9}>
                 <Container className="mt-5">
                   <Row>
-                    <Col xs="12">
-                      <MDBCard className="border-light mb-3">
-                        <MDBCardBody>
-                          <Row>
-                            <Col xs="2">
-                              <img
-                                src={
-                                  !user.dp || user.dp === ""
-                                    ? avatar
-                                    : imageLink + user.dp
-                                }
-                                className="img-thumbnail"
-                                width="50px"
-                              />
-                            </Col>
-                            <Col xs="10">
-                              <h4>{user.name}</h4>
-                            </Col>
-                          </Row>
-                        </MDBCardBody>
-                      </MDBCard>
-                    </Col>
+                    <a href={`/profile/${user.id}`}>
+                      <Col>
+                        <MDBCard className="border-light mb-3">
+                          <MDBCardBody className="level2 text-white">
+                            <Row>
+                              <Col xs="2">
+                                <img
+                                  src={
+                                    !user.dp || user.dp === ""
+                                      ? avatar
+                                      : imageLink + user.dp
+                                  }
+                                  className="img-thumbnail"
+                                  width="50px"
+                                />
+                              </Col>
+                              <Col xs="10">
+                                <h4>{user.name}</h4>
+                                <div className="text-muted">{user.email}</div>
+                              </Col>
+                            </Row>
+                          </MDBCardBody>
+                        </MDBCard>
+                      </Col>
+                    </a>
                   </Row>
                   {hasMore && (
                     <Row className="text-center">
@@ -274,7 +280,11 @@ function MessageDetails() {
                                     : "level3"
                                 }`}
                               >
-                                {message.type === "message" && message.message}
+                                {message.type === "message" &&
+                                  AES.decrypt(
+                                    message.message,
+                                    message.from
+                                  ).toString(CryptoJS.enc.Utf8)}
                                 {message.type === "image" && (
                                   <img
                                     src={imageLink + message.savedFileName}

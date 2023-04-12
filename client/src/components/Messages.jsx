@@ -3,6 +3,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import axios from "axios";
 import { Badge, Button, PageHeader, Image } from "react-bootstrap";
 import avatar from "../files/avatar.png";
+const CryptoJS = require("crypto-js");
 
 export default function Messages() {
   const isAlreadyLogged = localStorage.getItem("userId");
@@ -47,7 +48,15 @@ export default function Messages() {
                   />
                   <div className="ms-3">
                     <div className="fw-bold text-white">{e.username}</div>
-                    <div className="text-muted">{e.message}</div>
+                    <div className="text-muted">
+                      {CryptoJS.AES.decrypt(e.message, e.user).toString(
+                        CryptoJS.enc.Utf8
+                      ) ||
+                        CryptoJS.AES.decrypt(
+                          e.message,
+                          isAlreadyLogged
+                        ).toString(CryptoJS.enc.Utf8)}
+                    </div>
                   </div>
                 </div>
               </ListGroup.Item>
