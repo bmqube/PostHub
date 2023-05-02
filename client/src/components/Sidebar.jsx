@@ -33,6 +33,11 @@ export default function Sidebar({ link }) {
       link: "/notifications",
       icon: "fa-solid fa-bell fa-lg",
     },
+    // {
+    //   title: "Settings",
+    //   link: "/settings",
+    //   icon: "fa-solid fa-gear fa-lg",
+    // },
   ];
   return (
     <div className="h-100 border-end border-dark">

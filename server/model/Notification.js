@@ -12,6 +12,11 @@ const Notification = new Schema({
     type: String,
     enum: ["comment", "reaction"],
   },
+  reactedOn: {
+    type: String,
+    enum: ["post", "comment"],
+    default: "post",
+  },
   post: {
     type: String,
   },

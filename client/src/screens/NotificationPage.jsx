@@ -148,7 +148,7 @@ function NotificationPage() {
                               {item.notifyFor === "reaction"
                                 ? "reacted"
                                 : "commented"}
-                              {" on your post"}
+                              {" on your " + item.reactedOn}
                             </div>
                             <div className="text-muted">
                               {formatTime(item.createdAt)}

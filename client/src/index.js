@@ -15,6 +15,7 @@ import MessagePage from "./screens/MessagePage";
 import NotificationPage from "./screens/NotificationPage";
 import MessageDetails from "./screens/MessageDetails";
 import PostDetails from "./screens/PostDetails";
+import EditProfile from "./screens/EditProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -30,6 +31,7 @@ root.render(
       <Route path="/notifications" element={<NotificationPage />} />
       <Route path="/message/:userId" element={<MessageDetails />} />
       <Route path="/post/:postId" element={<PostDetails />} />
+      <Route path="/profile/edit" element={<EditProfile />} />
     </Routes>
   </BrowserRouter>
 );

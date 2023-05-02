@@ -12,6 +12,8 @@ const PostReact = require("../model/PostReact");
 const server = require("../server.js");
 const PostComment = require("../model/PostComment");
 const Notification = require("../model/Notification");
+const CommentReaction = require("../model/CommentReact");
+const CommentReact = require("../model/CommentReact");
 
 router.post("/create", async (req, res) => {
   try {
@@ -73,6 +75,59 @@ router.post("/react", async (req, res) => {
     } else {
       let newReact = new PostReact({
         postId: postId,
+        userId: userId,
+      });
+
+      await newReact.save();
+    }
+
+    res.send({
+      code: "SUCCESS",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.post("/comment/react", async (req, res) => {
+  // console.log(server.io);
+  try {
+    let userId = req.headers.userid;
+    let commentId = req.body.commentId;
+
+    // console.log(req.body);
+
+    let result = await CommentReact.findOne({
+      commentId: commentId,
+      userId: userId,
+    });
+
+    let comment = await PostComment.findById(commentId);
+
+    if (comment.creator !== userId) {
+      let notification = new Notification({
+        user: comment.creator,
+        causedBy: userId,
+        post: comment.postId,
+        notifyFor: "reaction",
+        reactedOn: "comment",
+      });
+
+      await notification.save();
+      server.io.to(comment.creator).emit("notification", "reaction");
+    }
+
+    if (result) {
+      result.existence = 1 - result.existence;
+
+      await result.save();
+    } else {
+      let newReact = new CommentReact({
+        commentId: commentId,
         userId: userId,
       });
 
@@ -239,6 +294,7 @@ router.post("/comment", async (req, res) => {
 router.get("/details/:postId", async (req, res) => {
   try {
     let postId = req.params.postId;
+    let userId = req.headers.userid;
 
     let post = await Post.findById(postId);
     let postCreator = await UserModel.findById(post.creator);
@@ -254,6 +310,14 @@ router.get("/details/:postId", async (req, res) => {
       let user = await UserModel.findById(curr_comment.creator);
       curr_comment.creatorName = user.name;
       curr_comment.dp = user.dp;
+
+      let temp = await CommentReact.find({
+        commentId: curr_comment._id,
+        userId: userId,
+        existence: 1,
+      });
+
+      curr_comment.reacted = temp.length > 0;
 
       comments.push(curr_comment);
     }

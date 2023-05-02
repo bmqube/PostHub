@@ -17,6 +17,7 @@ import {
   Button,
   Form,
   InputGroup,
+  Card,
 } from "react-bootstrap";
 import SinglePost from "../components/SinglePost";
 
@@ -121,6 +122,22 @@ function PostDetails() {
     }
   };
 
+  const reactComment = async (commentId) => {
+    // console.log(commentId);
+    let response = await axios.post(
+      "http://localhost:8000/post/comment/react/",
+      {
+        commentId: commentId,
+      },
+      {
+        headers: {
+          userId: isAlreadyLogged,
+        },
+      }
+    );
+    setBottom(!bottom);
+  };
+
   return (
     <Container sm>
       {!isAlreadyLogged && <Navigate to="/login" />}
@@ -183,6 +200,22 @@ function PostDetails() {
                             {comment.message}
                           </p>
                         </OverlayTrigger>
+                        <Card.Link
+                          onClick={() => {
+                            reactComment(comment._id);
+                          }}
+                          href="#"
+                          className={`text-decoration-none text-muted ${
+                            comment.reacted ? "text-warning" : "text-white"
+                          }`}
+                        >
+                          <i
+                            class={`${
+                              comment.reacted ? "fa-solid" : "fa-regular"
+                            } fa-thumbs-up fa-sm`}
+                          ></i>{" "}
+                          {comment.reacted ? "Liked" : "Like"}
+                        </Card.Link>
                         {/* </div> */}
                       </div>
                       {/* </Row> */}

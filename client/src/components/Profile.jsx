@@ -27,6 +27,7 @@ export default function Profile({ effect, setEffect }) {
   const [unfriendModal, setUnfriendModal] = useState(false);
 
   let { userId } = useParams();
+  userId = userId === isAlreadyLogged ? null : userId;
 
   const toggleShow = () => {
     if (!userId) {
@@ -242,7 +243,8 @@ export default function Profile({ effect, setEffect }) {
 
             {!userId && (
               <Button
-                onClick={sendFriendReq}
+                href="/profile/edit"
+                // onClick={sendFriendReq}
                 variant="outline-secondary text-white"
               >
                 <i class="fa-solid fa-pen-to-square"></i> Edit

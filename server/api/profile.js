@@ -83,6 +83,8 @@ router.post("/update/dp", async (req, res) => {
 
     const { height, width } = await sharp(`./files/${newFileName}`).metadata();
 
+    console.log(height, width);
+
     const size = Math.max(width, height);
     await sharp(`./files/${newFileName}`)
       .resize(size)
