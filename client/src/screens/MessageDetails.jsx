@@ -40,6 +40,7 @@ function MessageDetails() {
   const [file, setFile] = useState(null);
   const inputRef = useRef(null);
   const [bottom, setBottom] = useState(false);
+  const [decryptedFile, setDecryptedFile] = useState(null);
 
   const handleClick = () => {
     inputRef.current.click();
@@ -163,10 +164,10 @@ function MessageDetails() {
 
     if (file) {
       // console.log("ddd");
-      let body = new FormData();
-      body.append("message", file);
-      body.append("to", user.id);
-      body.append("type", "file");
+      // let body = new FormData();
+      // body.append("message", file);
+      // body.append("to", user.id);
+      // body.append("type", "file");
 
       // let wordArray = CryptoJS.lib.WordArray.create(file);
       // let encrypted = CryptoJS.AES.encrypt(
@@ -178,24 +179,43 @@ function MessageDetails() {
 
       // var decrypted = CryptoJS.AES.decrypt(encrypted, isAlreadyLogged); // Decryption: I: Base64 encoded string (OpenSSL-format) -> O: WordArray
       // var typedArray = convertWordArrayToUint8Array(decrypted);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileData = event.target.result;
+        const encryptedData = CryptoJS.AES.encrypt(
+          CryptoJS.lib.WordArray.create(fileData),
+          "secret-key"
+        ).toString();
+        console.log(encryptedData);
+      };
+      reader.readAsArrayBuffer(file);
+
+      const decryptData = (encryptedData) => {
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          encryptedData,
+          "secret-key"
+        );
+        const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
+        setDecryptedFile(new Blob([decryptedData]));
+      };
 
       // console.log(typedArray);
-      let response = await axios.post(
-        `http://localhost:8000/messages/send`,
-        body,
-        {
-          headers: {
-            userId: isAlreadyLogged,
-          },
-        }
-      );
-      console.log(response.data);
-      setFile(null);
-      inputRef.current.value = "";
-      setListOfPost([]);
-      setPage(1);
-      setReload(1 - reload);
-      setHasMore(true);
+      // let response = await axios.post(
+      //   `http://localhost:8000/messages/send`,
+      //   body,
+      //   {
+      //     headers: {
+      //       userId: isAlreadyLogged,
+      //     },
+      //   }
+      // );
+      // console.log(response.data);
+      // setFile(null);
+      // inputRef.current.value = "";
+      // setListOfPost([]);
+      // setPage(1);
+      // setReload(1 - reload);
+      // setHasMore(true);
     }
   };
 
@@ -360,6 +380,12 @@ function MessageDetails() {
                       </Col>
                     </Row>
                   )}
+                  <a
+                    href={URL.createObjectURL(decryptedFile)}
+                    download="decrypted-file.pdf"
+                  >
+                    Download
+                  </a>
                   <form onSubmit={handleSubmit}>
                     {/* <Form.Group
                       as={Row}
