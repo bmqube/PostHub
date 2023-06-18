@@ -13,6 +13,7 @@ const PostReact = require("../model/PostReact");
 const server = require("../server.js");
 const Message = require("../model/Message");
 const path = require("path");
+const UserGC = require("../model/UserGC");
 
 router.get("/", async (req, res) => {
   try {
@@ -61,6 +62,74 @@ router.get("/", async (req, res) => {
     res.send({
       code: "SUCCESS",
       data: listOfMessages,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.get("/gc/:query", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let query = req.params.query;
+
+    let friends = await Connections.find({
+      $or: [
+        { from: userId, status: "accepted" },
+        { to: userId, status: "accepted" },
+      ],
+    });
+
+    // console.log(friends);
+    let data = [];
+    for (let i = 0; i < friends.length; i++) {
+      const friend = friends[i];
+      const frindModel = await UserModel.findById(
+        friend.from === userId ? friend.to : friend.from
+      );
+      if (frindModel.name.includes(query) || frindModel.email.includes(query)) {
+        data.push({
+          userId: frindModel._id,
+          email: frindModel.email,
+          name: frindModel.name,
+          dp: frindModel.dp,
+        });
+      }
+    }
+
+    res.send({
+      code: "SUCCESS",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      code: "FAIL",
+      message: "Something Went Wrong",
+    });
+  }
+});
+
+router.post("/gc/create", async (req, res) => {
+  try {
+    let userId = req.headers.userid;
+    let selectedItems = req.body.selectedItems.map((item) => item.userId);
+    let gcName = req.body.gcName;
+
+    let newGCRelation = new UserGC({
+      userId: [userId, ...selectedItems],
+      gcName: gcName,
+    });
+
+    await newGCRelation.save();
+
+    res.send({
+      code: "SUCCESS",
+      data: {},
     });
   } catch (error) {
     console.log(error);

@@ -183,20 +183,45 @@ function MessageDetails() {
       reader.onload = (event) => {
         const fileData = event.target.result;
         const encryptedData = CryptoJS.AES.encrypt(
-          CryptoJS.lib.WordArray.create(fileData),
+          fileData,
           "secret-key"
         ).toString();
-        console.log(encryptedData);
+        // console.log(encryptedData);
+        decryptData(encryptedData);
       };
-      reader.readAsArrayBuffer(file);
+      reader.readAsDataURL(file);
+
+      /* Converts a cryptjs WordArray to native Uint8Array */
+      function CryptJsWordArrayToUint8Array(wordArray) {
+        const l = wordArray.sigBytes;
+        const words = wordArray.words;
+        const result = new Uint8Array(l);
+        var i = 0 /*dst*/,
+          j = 0; /*src*/
+        while (true) {
+          // here i is a multiple of 4
+          if (i == l) break;
+          var w = words[j++];
+          result[i++] = (w & 0xff000000) >>> 24;
+          if (i == l) break;
+          result[i++] = (w & 0x00ff0000) >>> 16;
+          if (i == l) break;
+          result[i++] = (w & 0x0000ff00) >>> 8;
+          if (i == l) break;
+          result[i++] = w & 0x000000ff;
+        }
+        return result;
+      }
 
       const decryptData = (encryptedData) => {
-        const decryptedBytes = CryptoJS.AES.decrypt(
-          encryptedData,
-          "secret-key"
-        );
-        const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
-        setDecryptedFile(new Blob([decryptedData]));
+        const decryptedData = CryptoJS.AES.decrypt(encryptedData, "secret-key");
+        const decryptedArrayBuffer =
+          CryptJsWordArrayToUint8Array(decryptedData);
+        const decryptedBlob = new Blob([decryptedArrayBuffer], {
+          type: "application/pdf",
+        });
+        console.log(decryptedBlob);
+        setDecryptedFile(decryptedBlob);
       };
 
       // console.log(typedArray);
@@ -380,12 +405,14 @@ function MessageDetails() {
                       </Col>
                     </Row>
                   )}
-                  <a
-                    href={URL.createObjectURL(decryptedFile)}
-                    download="decrypted-file.pdf"
-                  >
-                    Download
-                  </a>
+                  {decryptedFile && (
+                    <a
+                      href={URL.createObjectURL(decryptedFile)}
+                      download="decrypted-file.pdf"
+                    >
+                      Download
+                    </a>
+                  )}
                   <form onSubmit={handleSubmit}>
                     {/* <Form.Group
                       as={Row}

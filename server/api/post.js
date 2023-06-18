@@ -218,8 +218,7 @@ router.get("/feed/:id", async (req, res) => {
     }
     let result = await Post.find({
       creator: id,
-    });
-
+    }).sort({ createdAt: -1 });
     let data = [];
     let profile = await UserModel.findById(id, {
       password: 0,

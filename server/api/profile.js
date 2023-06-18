@@ -11,6 +11,7 @@ const Post = require("../model/Post");
 const fs = require("fs");
 
 const sharp = require("sharp");
+const { log } = require("console");
 
 router.get("/friends", async (req, res) => {
   try {

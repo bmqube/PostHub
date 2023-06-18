@@ -3,6 +3,7 @@ import { Button, InputGroup } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { MDBBtn, MDBInputGroup, MDBTextArea } from "mdb-react-ui-kit";
+import avatar from "../files/avatar.png";
 
 export default function CreatePost({ effect, setEffect }) {
   const isAlreadyLogged = localStorage.getItem("userId");
@@ -65,7 +66,7 @@ export default function CreatePost({ effect, setEffect }) {
     <>
       <div className="d-flex">
         <img
-          src={`http://localhost:8000/public/${dp}`}
+          src={dp ? `http://localhost:8000/public/${dp}` : avatar}
           className="border border-3 border-warning rounded-circle mb-2"
           alt=""
           width={50}
